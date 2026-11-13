@@ -1,0 +1,193 @@
+/* Months, not campaigns, inside the /nf production chrome. Both versions reuse production's
+   own classes (campaign-card, opportunity, workflow-header, phase-pill, dashboard tabs, and
+   the Campaign Pulse's am-/am2-/tf-/cp-); everything added for the new design is nfm-. */
+.nf .nf-months {
+  --nfm-text: #1c1c1c; --nfm-text-2: #5b5b5b; --nfm-muted: #717171;
+  --nfm-accent: #7a5cfa; --nfm-accent-wash: #f5f3ff; --nfm-ring: rgba(122, 92, 250, .28);
+  --nfm-tint-a: rgba(122, 92, 250, .05); --nfm-tint-b: rgba(122, 92, 250, .11);
+  --nfm-border: #e3e3e3; --nfm-pill: #f7f7f7; --nfm-track: #f1f3f4;
+  --nfm-ok: #167245; --nfm-ok-b: #00b44e; --nfm-ok-wash: #ebf7ef; --nfm-info: #0c8ee9;
+  --nfm-warn: #a85321; --nfm-warn-wash: #fff0ce;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--nfm-text);
+  min-height: 100%;
+}
+.nf .nf-months * { box-sizing: border-box; }
+.nf .nf-months button { font: inherit; cursor: pointer; }
+
+/* overview page frame (the captured page carries these paddings on .campaign-overview) */
+/* production's grey page runs edge to edge (62px sides, no cap) and fills the screen below the 46px header;
+   the top padding clears the second black bar, and needs !important because production's padding wins on order */
+.nf .nf-months .campaign-overview.nfm-overview { padding: 104px 62px 56px !important; min-height: calc(100vh - 46px); }
+.nf .nf-months .nfm-plan-line { color: var(--nfm-muted); font-size: 13px; padding-bottom: 9px; }
+.nf .nf-months .nfm-plan-line b { color: var(--nfm-text-2); font-weight: 600; }
+
+/* production card, flowed instead of absolutely positioned so the pace line fits.
+   Production doubles its hash classes (0,4,0), so these match that weight plus one
+   or its min-height 180 + 80px bottom padding win and leave dead space. */
+.nf .nf-months .campaign-card.svelte-1fvpax8.svelte-1fvpax8:not(.nfm-prodcard) { display: flex; flex-direction: column; gap: 0; min-height: 0; padding: 20px; }
+.nf .nf-months .campaign-card:not(.nfm-prodcard) .campaign-card__heading,
+.nf .nf-months .campaign-card:not(.nfm-prodcard) .campaign-card__subtitle { padding-right: 56px; }
+/* month pill: production's pill is inline-flex, which eats the space before the dot */
+.nf .nf-months .campaign-card__date.svelte-1fvpax8.svelte-1fvpax8 { gap: 4px; }
+.nf .nf-months .campaign-card__date.svelte-1fvpax8 strong.svelte-1fvpax8 { margin-left: 0; }
+.nf .nf-months .campaign-card:not(.nfm-prodcard) .campaign-card__progress { position: static; right: auto; left: auto; bottom: auto; }
+.nf .nf-months .campaign-card .nfm-bottom { margin-top: 18px; display: flex; flex-direction: column; gap: 8px; }
+.nf .nf-months .campaign-card .nfm-meta { color: var(--nfm-muted); font-size: 14px; font-weight: 500; line-height: 1.35; padding-right: 56px; }
+.nf .nf-months .campaign-card .nfm-meta b { color: var(--nfm-text); font-weight: 600; }
+.nf .nf-months .campaign-card:not(.nfm-prodcard) .campaign-card__progress { margin-top: 4px; }
+.nf .nf-months .campaign-card:not(.nfm-prodcard) .campaign-card__subtitle { max-width: none; }
+.nf .nf-months .campaign-card__open svg { width: 20px; height: 20px; }
+
+.nf .nf-months .opportunity__action-copy > p b { color: var(--nfm-text-2); font-weight: 600; }
+
+.nf .nf-months .opportunity__action { border: 0; cursor: pointer; }
+
+/* tracker: production header + the pace card */
+.nf .nf-months .nfm-track { padding: 60px 0 0; height: auto; min-height: 100%; overflow: visible; }
+.nf .nf-months .nfm-track .workspace-grid { overflow: visible; }
+.nf .nf-months .nfm-track .workflow-header { padding: 12px 20px 0; }
+.nf .nf-months .workflow-header-backlink .icon svg { display: block; }
+
+.nf .nf-months .nfm-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(8px); z-index: 320; background: #111114; color: #e6e6ea; font-size: 13px; padding: 10px 14px; border-radius: 10px; opacity: 0; pointer-events: none; transition: opacity .15s ease, transform .15s ease; max-width: min(90vw, 520px); }
+.nf .nf-months .nfm-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* the launch screen's timeline card, injected by NewFlow in months mode: production's white card
+   (same border, radius and shadow as "What happens next" below it) */
+.nf .nf-months-launchpace { width: 100%; box-sizing: border-box; padding: 20px 24px; border-radius: 20px; border: 1px solid rgba(228, 228, 228, .95); background: #fff; box-shadow: 0 14px 40px rgba(23, 23, 23, .06); font-family: Inter, -apple-system, sans-serif; text-align: left; }
+.nf .nf-months-launchpace .lp-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.nf .nf-months-launchpace .lp-k { font-size: 13px; font-weight: 500; color: #717171; }
+.nf .nf-months-launchpace .lp-v { margin-top: 2px; font-size: 22px; font-weight: 800; letter-spacing: -.25px; line-height: 1.2; color: #1c1c1c; }
+.nf .nf-months-launchpace .lp-pill { display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border: .5px solid #e3e3e3; border-radius: 999px; background: #f7f7f7; color: #5b5b5b; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.nf .nf-months-launchpace .lp-track,
+.nf .nf-months-launchpace .lp-phases { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+.nf .nf-months-launchpace .lp-track { margin-top: 18px; }
+.nf .nf-months-launchpace .lp-track span { height: 6px; border-radius: 999px; background: #f1f3f4; }
+.nf .nf-months-launchpace .lp-track span.on { background: #7a5cfa; }
+.nf .nf-months-launchpace .lp-phases { margin-top: 8px; }
+.nf .nf-months-launchpace .lp-phases span { font-size: 12px; font-weight: 500; color: #717171; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nf .nf-months-launchpace .lp-phases span.now { color: #1c1c1c; font-weight: 600; }
+.nf .nf-months-launchpace .lp-tip { display: flex; align-items: flex-start; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #ebebeb; }
+.nf .nf-months-launchpace .lp-bulb { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 8px; background: #fff0ce; color: #a85321; }
+.nf .nf-months-launchpace .lp-tip p { margin: 0; padding-top: 5px; font-size: 13px; line-height: 1.45; color: #5b5b5b; }
+.nf .nf-months-launchpace .lp-tip b { color: #1c1c1c; font-weight: 600; }
+@media (max-width: 480px) {
+  .nf .nf-months-launchpace { padding: 18px; }
+  .nf .nf-months-launchpace .lp-phases span { font-size: 11px; }
+}
+
+.nf .nf-months .campaign-card__progress.nfm-weeks span { background: var(--nfm-accent); opacity: .55; }
+
+
+/* ---------- Tony, Sep 29 (the 'after' revision) ---------- */
+/* "Campaign 1 | November content": the number leads at the title's own weight, a hairline
+   stands in for the pipe, the month follows a step quieter. Wraps as two units, never mid-phrase. */
+.nf .nf-months .nfm-title { display: flex; flex-wrap: wrap; align-items: center; column-gap: 12px; row-gap: 0; }
+.nf .nf-months .nfm-title .nfm-div { width: 1.5px; height: .78em; background: currentColor; opacity: .22; border-radius: 1px; flex: 0 0 auto; }
+.nf .nf-months .nfm-title .nfm-mo { font-weight: 600; opacity: .72; white-space: nowrap; }
+.nf .nf-months .opportunity--locked .nfm-title .nfm-div { opacity: .5; }
+.nf .nf-months .opportunity--locked .nfm-title .nfm-mo { opacity: .9; }
+/* the countdown pill lines up with "Launch now" on the tile above it: same right edge, same
+   width (Julia, Oct 1). Production parks it 72px in from the right, on no shared axis. */
+.nf .nf-months .opportunity--locked.nfm-locked .opportunity__countdown.svelte-75h9ek.svelte-75h9ek.svelte-75h9ek { right: 20px; min-width: 146px; text-align: center; box-sizing: border-box; }
+
+/* the timeline widget: small, and it expands in place into the full dated timeline */
+.nf .nf-months .nfm-tl .nfm-tl__body { padding: 16px 20px 6px; }
+.nf .nf-months .nfm-tl__compact { cursor: pointer; }
+.nf .nf-months .nfm-tl__k { font-size: 13px; font-weight: 500; color: var(--nfm-muted); }
+/* the date sits in the rail's own type scale (Julia, Oct 1: 22px/800 read "cartoony" next to
+   Recent activity's 13px notes): 16px/600, one step above the card title's 14px */
+.nf .nf-months .nfm-tl__v { margin-top: 2px; font-size: 16px; font-weight: 600; letter-spacing: -.1px; line-height: 1.3; color: var(--nfm-text); }
+.nf .nf-months .nfm-tl__track,
+.nf .nf-months .nfm-tl__phases { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+.nf .nf-months .nfm-tl__track { margin-top: 14px; }
+.nf .nf-months .nfm-tl__track span { height: 6px; border-radius: 999px; background: var(--nfm-track); }
+.nf .nf-months .nfm-tl__track span.done { background: var(--nfm-accent); opacity: .38; }
+.nf .nf-months .nfm-tl__track span.now { background: var(--nfm-accent); }
+.nf .nf-months .nfm-tl__phases { margin-top: 8px; }
+/* the continuous version (Julia, Oct 1): the Sep 24 box's single bar, phases still under it */
+/* the moving card (movingTimeline.js, decided Oct 6): new date, old date small and crossed out,
+   the Early tag in production's Completed-pill green, one grey or amber line under the date */
+.nf .nf-months .nfm-tl--moving .nfm-tl__v { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+.nf .nf-months .nfm-tl__was { font-size: 12.5px; font-weight: 500; color: #9a9a9a; text-decoration: line-through; }
+.nf .nf-months .nfm-tl__early { display: inline-flex; align-items: center; align-self: center; min-height: 20px; padding: 0 8px; border-radius: 999px; background: #ebf7ef; color: #167245; font-size: 12px; font-weight: 600; line-height: 1; white-space: nowrap; }
+.nf .nf-months .campaign-card .nfm-meta .nfm-tl__early { margin-left: 8px; vertical-align: 1px; }
+.nf .nf-months .nfm-tl__why { margin-top: 6px; display: flex; align-items: flex-start; gap: 6px; font-size: 12.5px; font-weight: 500; line-height: 1.4; color: var(--nfm-muted); }
+.nf .nf-months .nfm-tl__why i { width: 6px; height: 6px; margin-top: 6px; flex: none; border-radius: 50%; background: #c2c5c4; }
+.nf .nf-months .nfm-tl__why.is-you { color: #8a4a12; }
+.nf .nf-months .nfm-tl__why.is-you i { background: #e88e2c; }
+.nf .nf-months .nfm-tl .nfm-tl__steps .nfm-tl__started { color: #17663f; font-weight: 500; }
+.nf .nf-months .nfm-tl__line { height: 6px; margin-top: 14px; border-radius: 999px; background: var(--nfm-track); overflow: hidden; }
+.nf .nf-months .nfm-tl__line span { display: block; height: 100%; border-radius: inherit; background: var(--nfm-accent); opacity: .7; }
+/* labels are centered in their slot (Julia, Oct 1: left-aligned in the uneven week grid read as
+   "weirdly spaced": Match and Ship touched, the rest floated). Segments: the slot is the phase's own
+   weeks. Line: five equal slots, so the labels are evenly spaced. "Match" owns one week in Segments
+   (about 38px in the rail), so labels may run into the gap rather than truncate. */
+.nf .nf-months .nfm-tl__phases.nfm-tl__phases--even { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; }
+.nf .nf-months .nfm-tl__phases span { font-size: 12px; font-weight: 500; color: var(--nfm-muted); white-space: nowrap; letter-spacing: -.1px; text-align: center; }
+.nf .nf-months .nfm-tl__phases span.now { color: var(--nfm-text); font-weight: 600; }
+.nf .nf-months .nfm-tl__toggle { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; margin-top: 14px; padding: 12px 0 10px; border: 0; border-top: 1px solid #ebebeb; background: transparent; color: var(--nfm-text-2); font-size: 13px; font-weight: 600; text-align: left; }
+.nf .nf-months .nfm-tl__toggle:hover { color: var(--nfm-text); }
+.nf .nf-months .nfm-tl .nfm-tl__toggle { border-radius: 0; box-shadow: none; }
+/* no box on the toggle in any state (Julia, Oct 6): the captured CSS paints a grey square on
+   press (.nf button:active) and the focus ring read as a highlight. Keyboard focus underlines the label */
+.nf .nf-months .nfm-tl .nfm-tl__toggle:hover,
+.nf .nf-months .nfm-tl .nfm-tl__toggle:focus,
+.nf .nf-months .nfm-tl .nfm-tl__toggle:focus-visible,
+.nf .nf-months .nfm-tl .nfm-tl__toggle:active { background: transparent; outline: none; box-shadow: none; border-top-color: #ebebeb; }
+.nf .nf-months .nfm-tl .nfm-tl__toggle:focus-visible span { text-decoration: underline; text-underline-offset: 3px; }
+.nf .nf-months .nfm-tl__toggle svg { transition: transform .2s ease; }
+.nf .nf-months .nfm-tl.is-open .nfm-tl__toggle svg { transform: rotate(180deg); }
+.nf .nf-months .nfm-tl__full { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .26s ease; }
+.nf .nf-months .nfm-tl__full > div { overflow: hidden; min-height: 0; visibility: hidden; transition: visibility 0s .26s; }
+.nf .nf-months .nfm-tl.is-open .nfm-tl__full { grid-template-rows: 1fr; }
+.nf .nf-months .nfm-tl.is-open .nfm-tl__full > div { visibility: visible; transition-delay: 0s; }
+.nf .nf-months .nfm-tl__steps { list-style: none; margin: 0; padding: 4px 0 0; }
+.nf .nf-months .nfm-tl__steps li { position: relative; display: grid; grid-template-columns: 12px minmax(0, 1fr); column-gap: 12px; padding-bottom: 14px; }
+.nf .nf-months .nfm-tl__steps li::before { content: ""; position: absolute; left: 5px; top: 14px; bottom: -4px; width: 2px; border-radius: 1px; background: var(--nfm-track); }
+.nf .nf-months .nfm-tl__steps li.done::before { background: var(--nfm-accent); opacity: .3; }
+.nf .nf-months .nfm-tl__steps li:last-child { padding-bottom: 4px; }
+.nf .nf-months .nfm-tl__steps li:last-child::before { display: none; }
+.nf .nf-months .nfm-tl__dot { position: relative; z-index: 1; width: 12px; height: 12px; margin-top: 3px; border-radius: 50%; background: #fff; border: 2px solid #d5d7da; }
+.nf .nf-months .nfm-tl__steps li.done .nfm-tl__dot { background: #c9bdfd; border-color: #c9bdfd; }
+.nf .nf-months .nfm-tl__steps li.now .nfm-tl__dot { background: var(--nfm-accent); border-color: var(--nfm-accent); box-shadow: 0 0 0 4px var(--nfm-accent-wash); }
+.nf .nf-months .nfm-tl__row { display: flex; align-items: center; gap: 8px; min-height: 18px; }
+.nf .nf-months .nfm-tl__row b { font-size: 13.5px; font-weight: 600; color: var(--nfm-text); }
+.nf .nf-months .nfm-tl__steps li.done .nfm-tl__row b { color: var(--nfm-text-2); }
+.nf .nf-months .nfm-tl__now { display: inline-flex; align-items: center; min-height: 18px; padding: 0 7px; border-radius: 999px; background: var(--nfm-accent-wash); color: var(--nfm-accent); font-size: 11px; font-weight: 700; }
+.nf .nf-months .nfm-tl__dates { margin-left: auto; font-size: 12px; color: var(--nfm-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.nf .nf-months .nfm-tl .nfm-tl__steps p { margin: 2px 0 0; font-size: 13px; line-height: 1.4; color: var(--nfm-muted); }
+.nf .nf-months .nfm-tl__steps li.now p { color: var(--nfm-text-2); }
+/* spacing restated at card weight: the Dashboard's `p { margin: 0 }` reset was flattening it, which left
+   6px above the divider, 15 below and 9 under the text (Julia, Oct 1: "padding underneath is a bit wrong").
+   Now even above and below the divider, and the same breathing room under the text as Recent activity */
+.nf .nf-months .nfm-tl .nfm-tl__note { margin: 8px 0 14px; padding-top: 12px; border-top: 1px solid #ebebeb; font-size: 12.5px; line-height: 1.45; color: var(--nfm-muted); text-wrap: balance; }
+@media (prefers-reduced-motion: reduce) {
+  .nf .nf-months .nfm-tl__full, .nf .nf-months .nfm-tl__full > div, .nf .nf-months .nfm-tl__toggle svg { transition: none; }
+}
+
+/* The Dashboard as production ships it (Campaign Pulse on pulse.css), inside the captured chrome.
+   Same fix-ups as content-handoff-study/surface.html: the captured CSS carries
+   `.nf :where(.workflow-page) button` and friends, so the pulse's own sizes are restated here. */
+.nf .nf-months .stage-top-card.nfm-dash { background: #f9fafb; padding: 20px 24px 8px; margin-top: 16px; }
+.nf .nf-months .nfm-dash .nfm-pulse { margin: 0 0 16px; }
+.nf .nf-months .nfm-dash .am2-bar { height: 40px; }
+.nf .nf-months .nfm-dash .am-row { height: 64px; padding: 0 20px; cursor: pointer; }
+.nf .nf-months .nfm-dash .am-card, .nf .nf-months .nfm-dash .am-progress, .nf .nf-months .nfm-dash .am-row { animation: none; }
+.nf .nf-months .nfm-dash p { margin: 0; }
+.nf .nf-months .nfm-dash .cp-celebrate-emoji { margin-right: 6px; }
+/* the captured chrome fades every disabled button; production's done and empty slabs are full strength */
+.nf .nf-months .nfm-dash .am2-bar:disabled { opacity: 1; }
+
+/* embedded frames of the wizard and launch screen (NewFlow sets the class on <html>): the NPS ask is
+   another proposal, not part of prod or of this change, so it stays out of the comparison */
+html.nf-embed [data-nf-nps] { display: none !important; }
+
+/* ?embed=1 (the before/after page's frames): no black bars above, so no clearance for them */
+.nf .nf-months.nfm-embed .campaign-overview.nfm-overview { padding-top: 40px !important; }
+.nf .nf-months.nfm-embed .nfm-track { padding-top: 8px; }
+
+
+@media (max-width: 900px) {
+  .nf .nf-months .campaign-overview.nfm-overview { padding: 104px 16px 48px !important; }
+}

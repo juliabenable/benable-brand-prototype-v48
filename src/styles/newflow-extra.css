@@ -1,0 +1,148 @@
+/* New-chrome flow (Aug 18 capture) — host isolation + hand-written extras.
+   The captured production CSS lives in newflow-production.css (auto-generated,
+   scoped under .nf). This file holds only what the prototype adds. */
+
+/* The .nf wrapper plays the <body> role of the captured pages. position:fixed
+   isolates it fully from the old-era chrome's body styling and scroll state. */
+.nf {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 10;
+  background: #fff;
+}
+
+/* Every prototype transition swaps captured DOM — kill the page-entry
+   animations so screens don't replay their load choreography ("jumpy
+   refresh"). This file loads BEFORE newflow-production.css so equal-
+   specificity production rules win ties; these use !important on purpose. */
+.nf [class*="animate-page-in"] { animation: none !important; }
+.nf .workspace-content-shell,
+.nf .workspace-content-shell.is-entering {
+  transition: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+.nf .workspace-route-progress { display: none !important; }
+
+/* overrides.css unlocks page scroll for the OLD chrome's review pages via
+   .brand-dashboard:has(.draft-review-root){height:auto; overflow:visible} —
+   and the captured brief page carries production's own .draft-review-root,
+   so that unlock fires inside .nf too and kills the inner scroller. Pin the
+   captured geometry back (scoped to .nf, !important to out-rank the :has). */
+/* .nf stacked ×3: their :has rules are also !important at (0,3,0) and load
+   later, so ties lose — (0,4,0)+ wins outright. */
+.nf.nf.nf .brand-dashboard { height: 100vh !important; overflow: hidden !important; }
+.nf.nf.nf .dashboard-body { height: 100% !important; min-height: 0 !important; overflow: hidden !important; }
+.nf.nf.nf main.workspace-content { overflow: hidden !important; height: auto !important; }
+.nf.nf.nf .workspace-content-shell { flex: 1 1 auto !important; min-height: 0 !important; height: auto !important; overflow: auto !important; }
+.nf.nf.nf .workflow-page { height: 100% !important; min-height: 100% !important; overflow: hidden !important; }
+.nf.nf.nf .workspace-grid { overflow-y: auto !important; min-height: 0 !important; height: auto !important; }
+
+/* ---- /nf/track: v45 tracker under the new-chrome sidebar ---- */
+/* Grid: .nf-scoped sidebar cell | UNSCOPED old-chrome tracker document.
+   The tracker content must never sit inside .nf (colliding class names:
+   .workflow-header, .workspace-grid exist in both CSS worlds). */
+.nf-track {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  min-height: 100vh;
+  background: #fff;
+}
+.nf.nf--embed {
+  position: sticky;
+  top: 0;
+  inset: auto;
+  height: 100vh;
+  overflow: visible;
+  z-index: 5;
+}
+.nf-track__main { min-width: 0; }
+.nf-track__main.brand-dashboard {
+  height: auto !important;
+  min-height: 100vh;
+  overflow: visible !important;
+}
+/* clear the fixed fork bar — the old chrome's header hugged the top */
+.nf-track__main .workflow-header { padding-top: 60px; }
+
+/* ---- fork switchboard drawer (⚙ All forks) ---- */
+/* the bar lives OUTSIDE .nf and .cp-root, so pin its font explicitly */
+.nf-forkbar, .nf-forkbar button { font-family: Inter, -apple-system, sans-serif; }
+/* clear the fixed bar on every /nf page (tracker handles its own header) */
+.nf main.workspace-content { padding-top: 46px; }
+.nf .draft-topbar { top: 46px; }
+.nf-forkbar__group { display: inline-flex; align-items: center; gap: 4px; }
+.nf-forkdrawer {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 299;
+  width: 480px;
+  max-width: calc(100vw - 32px);
+  background: #211d2af2;
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 18px 50px #00000055;
+  color: #fff;
+  font-family: Inter, -apple-system, sans-serif;
+}
+.nf-forkdrawer__head { display: flex; align-items: center; justify-content: space-between; font-size: 14px; }
+.nf-forkdrawer__head button { background: none; border: 0; color: #ffffff8a; font-size: 13px; cursor: pointer; padding: 4px; }
+.nf-forkdrawer__sub { margin: 6px 0 12px; font-size: 12px; line-height: 1.5; color: #ffffff8a; }
+.nf-forkdrawer__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid #ffffff1a; }
+.nf-forkdrawer__label { font-size: 12.5px; font-weight: 600; }
+.nf-forkdrawer__label span { display: block; margin-top: 2px; font-size: 11px; font-weight: 400; color: #ffffff70; max-width: 250px; line-height: 1.4; }
+.nf-forkdrawer__seg { display: inline-flex; gap: 4px; flex: none; }
+
+/* Old-era production.css has bare element rules (e.g. p { color: #7a4040 }).
+   These guards out-rank them (0,1,0 beats 0,0,1) while staying below every
+   scoped .nf rule — the v43.1 reviewModal lesson. */
+.nf :where(p, span, li, ul, ol, h1, h2, h3, h4, h5, h6, small, strong, em, td, th, label, a) {
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+}
+
+/* --- AI brief-generation interstitial (reconstructed from session screenshot:
+   the live DOM was replaced before it could be stashed) --- */
+.nf-generating {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 148px;
+  z-index: 40;
+}
+.nf-generating .nf-dots {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 34px;
+}
+.nf-generating .nf-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7a5cfa;
+  animation: nf-dot 1s ease-in-out infinite;
+}
+.nf-generating .nf-dots span:nth-child(2) { animation-delay: 0.16s; }
+.nf-generating .nf-dots span:nth-child(3) { animation-delay: 0.32s; }
+@keyframes nf-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.55; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+.nf-generating .nf-line {
+  font-size: 13px;
+  color: #9a9aa2;
+  margin: 0 0 10px;
+  opacity: 0.35;
+  transition: opacity 0.4s;
+}
+.nf-generating .nf-line.on { opacity: 1; color: #55555c; }

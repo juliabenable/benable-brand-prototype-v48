@@ -1,0 +1,75 @@
+/* Creator variants on the brief (Nov 13). Rules ride at .nf .x (0,2,0)
+   because the captured production CSS carries bare element rules. */
+.nf .nfv-total { margin: -10px 0 -6px; color: #717171; font-size: 13px; line-height: 1.45; }
+
+.nf .nfv-tabs {
+  display: flex; align-items: flex-end; gap: 2px; flex-wrap: wrap;
+  border-bottom: 1px solid #EBEBEB; margin: 0;
+}
+.nf .nfv-tab {
+  display: inline-flex; align-items: center; gap: 2px;
+  border: 1px solid transparent; border-bottom: 0; border-radius: 10px 10px 0 0;
+  margin-bottom: -1px; padding-right: 4px; background: transparent;
+}
+.nf .nfv-tab--active { background: #fff; border-color: #EBEBEB; }
+.nf .nfv-tab-label {
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 0; background: none; cursor: pointer;
+  padding: 9px 6px 9px 12px; font: 600 13px/1.2 Inter, system-ui, sans-serif; color: #717171;
+}
+.nf .nfv-tab--active .nfv-tab-label { color: #1C1C1C; }
+.nf .nfv-tab-label:focus-visible { outline: 2px solid rgba(122,92,250,.4); outline-offset: -2px; border-radius: 8px; }
+.nf .nfv-tab-count {
+  min-width: 20px; padding: 1px 6px; border-radius: 999px;
+  background: #F3F4F7; color: #5D6472; font-size: 11px; font-weight: 600; text-align: center;
+}
+.nf .nfv-tab--active .nfv-tab-count { background: #F5F3FF; color: #5C3FE3; }
+.nf .nfv-tab-x {
+  width: 22px; height: 22px; display: inline-grid; place-items: center;
+  border: 0; border-radius: 6px; background: none; color: #9CA0A8; cursor: pointer; padding: 0;
+}
+.nf .nfv-tab-x:hover { background: #F3F4F7; color: #1C1C1C; }
+.nf .nfv-add {
+  margin-left: auto; margin-bottom: 6px;
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid #E3E3E3; border-radius: 9px; background: #fff;
+  padding: 6px 10px; font: 600 12.5px/1 Inter, system-ui, sans-serif; color: #5C3FE3; cursor: pointer;
+}
+.nf .nfv-add:hover { background: #FAF7FF; border-color: #D6CFEA; }
+
+.nf .nfv-panel { display: flex; flex-direction: column; gap: 20px; }
+.nf .nfv-head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+  flex-wrap: wrap;
+}
+.nf .nfv-kicker {
+  display: block; margin-bottom: 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #9CA0A8;
+}
+.nf .nfv-name-wrap { flex: 1 1 220px; min-width: 0; }
+.nf .nfv-name {
+  width: 100%; box-sizing: border-box;
+  border: 1px solid rgba(232,228,240,.96); border-radius: 9px; background: #fff;
+  padding: 8px 10px; font: 600 14px/1.3 Inter, system-ui, sans-serif; color: #1C1C1C;
+}
+.nf .nfv-name:focus { outline: none; border-color: #7a5cfa; box-shadow: 0 0 0 3px #7a5cfa1f; }
+.nf .nfv-count { flex: none; }
+
+.nf .nfv-post { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 6px; }
+.nf .nfv-select {
+  flex: 1 1 240px; min-width: 0;
+  border: 1px solid rgba(232,228,240,.96); border-radius: 9px; background: #fff;
+  padding: 7px 10px; font: 500 13px/1.3 Inter, system-ui, sans-serif; color: #1C1C1C;
+}
+.nf .nfv-select:focus { outline: none; border-color: #7a5cfa; box-shadow: 0 0 0 3px #7a5cfa1f; }
+.nf .nfv-postline { color: #5B5B5B; }
+
+.nf .nfv-list .nfv-li[contenteditable="true"] {
+  outline: none; border-radius: 6px; padding: 2px 6px 2px 18px;
+  background: #FAF7FF; box-shadow: inset 0 0 0 1px #E8E2FB;
+}
+.nf .nfv-list .nfv-li[contenteditable="true"]:focus { box-shadow: inset 0 0 0 1px #7a5cfa; }
+.nf .nfv-li-add {
+  align-self: flex-start; margin-top: -2px; border: 0; background: none; padding: 2px 0; cursor: pointer;
+  font: 600 12.5px/1.2 Inter, system-ui, sans-serif; color: #5C3FE3;
+}

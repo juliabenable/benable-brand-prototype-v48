@@ -1,0 +1,8 @@
+/* Day 3 card face stack: the single 80px blurred circle (.am-state-avatar) as four overlapping 64px ones */
+.ff-stack { display: flex; align-items: center; justify-content: center; flex: none; }
+.ff-face {
+  display: block; width: 64px; height: 64px; margin-left: -16px; flex: none; overflow: hidden; border-radius: 999px;
+  background: #f4f4f5; border: 4px solid #fff; box-shadow: 0 0 0 1px rgba(231,226,219,0.55);
+}
+.ff-face:first-child { margin-left: 0; }
+.ff-face img { display: block; width: 100%; height: 100%; object-fit: cover; filter: blur(3px); }

@@ -1,0 +1,5 @@
+node_modules
+dist
+.DS_Store
+# leftover archives + an old build from the session that first assembled v48 (about 199 MB); never upload
+_to_delete

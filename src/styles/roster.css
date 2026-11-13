@@ -1,0 +1,161 @@
+/* Direction E, the always-on roster, inside the /nf production chrome.
+   Everything is scoped under .nf-roster so the captured stylesheet (7k rules
+   under .nf) and this page never fight. Palette = production's own values. */
+.nf .nf-roster {
+  --rp-bg: #ffffff; --rp-border: #e3e3e3; --rp-border-opp: #d6cfea;
+  --rp-text: #1c1c1c; --rp-text-2: #5b5b5b; --rp-muted: #717171;
+  --rp-accent: #7a5cfa; --rp-accent-wash: #f5f3ff; --rp-accent-ring: rgba(122, 92, 250, .28);
+  --rp-tint-a: rgba(122, 92, 250, .05); --rp-tint-b: rgba(122, 92, 250, .11);
+  --rp-pill: #f7f7f7; --rp-track: #f1f3f4; --rp-ok-a: #8beab4; --rp-ok-b: #00b44e;
+  --rp-ok: #167245; --rp-info: #0c8ee9; --rp-warn: #a85321; --rp-warn-wash: #fff0ce; --rp-neutral-wash: #f3f4f7;
+  --rp-shadow: 0 14px 40px rgba(23, 23, 23, .06);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px; line-height: 1.45; color: var(--rp-text); background: var(--rp-bg);
+  min-height: 100%;
+}
+.nf .nf-roster * { box-sizing: border-box; }
+.nf .nf-roster button { font: inherit; color: inherit; cursor: pointer; }
+.nf .nf-roster .num { font-variant-numeric: tabular-nums; }
+.nf .nf-roster .page { padding: 104px 32px 56px; max-width: 1180px; }
+
+.nf .nf-roster .overview-header h1 { margin: 0; font-size: 24px; font-weight: 800; line-height: 1.2; letter-spacing: -.3px; color: var(--rp-text); }
+.nf .nf-roster .overview-header p { margin: 6px 0 0; color: var(--rp-muted); font-size: 14px; line-height: 1.45; max-width: 66ch; }
+.nf .nf-roster .overview-header p b { color: var(--rp-text-2); font-weight: 600; }
+
+/* month strip */
+.nf .nf-roster .strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+.nf .nf-roster .strip.first { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); grid-template-rows: auto auto; }
+.nf .nf-roster .strip.first .mt:first-child { grid-row: 1 / span 2; }
+.nf .nf-roster .strip.first .mt.dim { min-height: 0; }
+.nf .nf-roster .mt { position: relative; padding: 18px 20px 16px; border: 1px solid var(--rp-border); border-radius: 16px; background: var(--rp-bg); min-width: 0; display: flex; flex-direction: column; gap: 6px; min-height: 176px; }
+.nf .nf-roster .mt.now { border-color: var(--rp-accent-ring); background: linear-gradient(135deg, var(--rp-tint-a), var(--rp-tint-b)); }
+.nf .nf-roster .mt.dim { border-style: dashed; background: var(--rp-pill); }
+.nf .nf-roster .mt.planned { border-style: solid; border-color: var(--rp-accent-ring); background: var(--rp-bg); }
+.nf .nf-roster .mt.paused { background: var(--rp-neutral-wash); }
+.nf .nf-roster .mt.compact { min-height: 0; padding: 14px 16px 12px; }
+.nf .nf-roster .mt .k { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.nf .nf-roster .mt .k b { font-size: 16px; font-weight: 800; letter-spacing: -.2px; color: var(--rp-text); }
+.nf .nf-roster .mt .k span { font-size: 12px; color: var(--rp-muted); font-weight: 500; white-space: nowrap; }
+.nf .nf-roster .mt .big { font-size: 26px; font-weight: 800; letter-spacing: -.3px; line-height: 1.1; margin-top: 2px; color: var(--rp-text); }
+.nf .nf-roster .mt .big.muted { color: var(--rp-muted); }
+.nf .nf-roster .mt .big small { font-size: 14px; font-weight: 600; color: var(--rp-muted); margin-left: 4px; letter-spacing: 0; }
+.nf .nf-roster .mt .st { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--rp-text-2); }
+.nf .nf-roster .mt .st::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--rp-info); flex: 0 0 auto; }
+.nf .nf-roster .mt .st.ok::before { background: var(--rp-ok); }
+.nf .nf-roster .mt .st.warn { color: var(--rp-warn); }
+.nf .nf-roster .mt .st.warn::before { background: var(--rp-warn); }
+.nf .nf-roster .mt .st.quiet { color: var(--rp-muted); }
+.nf .nf-roster .mt .st.quiet::before { background: var(--rp-border); }
+.nf .nf-roster .mt .pace { font-size: 13px; color: var(--rp-muted); line-height: 1.35; }
+.nf .nf-roster .mt .pace b { color: var(--rp-text-2); font-weight: 600; }
+.nf .nf-roster .mt .fill { height: 10px; border-radius: 999px; background: var(--rp-track); overflow: hidden; margin-top: auto; }
+.nf .nf-roster .mt .fill span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--rp-ok-a), var(--rp-ok-b)); width: var(--w); transition: width .26s ease; }
+.nf .nf-roster .mt .fill.soft span { background: var(--rp-accent); opacity: .55; }
+.nf .nf-roster .mt .fill.warn span { background: var(--rp-warn); opacity: .7; }
+
+/* the early-brief queue */
+.nf .nf-roster .plan { margin-top: auto; padding-top: 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.nf .nf-roster .plan-hint { font-size: 12px; color: var(--rp-muted); }
+.nf .nf-roster .plan.done { align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: 10px; background: var(--rp-accent-wash); flex-wrap: nowrap; }
+.nf .nf-roster .plan-check { width: 20px; height: 20px; border-radius: 50%; background: var(--rp-accent); color: #fff; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; margin-top: 1px; }
+.nf .nf-roster .plan-copy { font-size: 12.5px; color: var(--rp-text-2); line-height: 1.35; min-width: 0; flex: 1 1 auto; }
+.nf .nf-roster .plan-copy b { color: var(--rp-text); font-weight: 600; }
+.nf .nf-roster .plan-note-text { display: block; margin-top: 3px; color: var(--rp-text); }
+.nf .nf-roster .plan-form { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+.nf .nf-roster .plan-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.nf .nf-roster .chip { display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border: 1px solid var(--rp-border); border-radius: 999px; background: var(--rp-bg); color: var(--rp-text-2); font-size: 12px; font-weight: 500; }
+.nf .nf-roster .chip.on { border-color: var(--rp-accent); background: var(--rp-accent-wash); color: var(--rp-accent); }
+.nf .nf-roster .chip.on::before { content: "✓"; font-weight: 700; }
+.nf .nf-roster .plan-note { width: 100%; border: 1px solid var(--rp-border); border-radius: 10px; padding: 8px 10px; font: inherit; font-size: 13px; color: var(--rp-text); background: var(--rp-bg); resize: vertical; min-height: 44px; }
+.nf .nf-roster .plan-note:focus { outline: 3px solid var(--rp-accent-ring); outline-offset: 1px; border-color: var(--rp-accent); }
+.nf .nf-roster .plan-actions { display: flex; align-items: center; gap: 8px; }
+.nf .nf-roster .strip-more { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 12px; }
+.nf .nf-roster .strip-more-toggle { margin-top: 8px; }
+.nf .nf-roster .strip-more-toggle .btn-txt { color: var(--rp-accent); font-weight: 600; padding-left: 0; }
+
+/* hero inside the first tile */
+.nf .nf-roster .mt .hero-in { margin-top: 12px; padding-top: 16px; border-top: 1px solid var(--rp-accent-ring); display: flex; flex-direction: column; gap: 12px; }
+.nf .nf-roster .mt.paused .hero-in { border-top-color: var(--rp-border); }
+.nf .nf-roster .mt .hero-in h2 { margin: 0; font-size: 22px; font-weight: 800; line-height: 1.2; letter-spacing: -.25px; color: var(--rp-text); }
+.nf .nf-roster .mt .hero-in p { margin: 0; color: var(--rp-text-2); font-size: 14px; line-height: 1.45; max-width: 62ch; }
+.nf .nf-roster .mt .hero-in .steps { display: flex; gap: 16px 24px; flex-wrap: wrap; }
+.nf .nf-roster .mt .hero-in .steps div { font-size: 13px; color: var(--rp-text-2); display: flex; align-items: center; gap: 8px; }
+.nf .nf-roster .mt .hero-in .steps div i { width: 22px; height: 22px; border-radius: 50%; background: var(--rp-accent-wash); color: var(--rp-accent); font-style: normal; font-weight: 700; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+.nf .nf-roster .mt .hero-in .cta-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
+.nf .nf-roster .mt .hero-in .cta-row .pace { flex: 1 1 220px; }
+
+/* buttons (production's opportunity pill + dashboard action buttons) */
+.nf .nf-roster .btn-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 146px; min-height: 42px; padding: 0 22px; border: 0; border-radius: 999px; background: var(--rp-accent); color: #fff; font-size: 16px; font-weight: 600; white-space: nowrap; flex: 0 0 auto; transition: background-color .14s ease; }
+.nf .nf-roster .btn-pill:hover { background: #6a4df0; }
+.nf .nf-roster .btn-sm { border: 0; border-radius: 999px; background: var(--rp-accent); color: #fff; font-size: 12px; font-weight: 700; padding: 9px 14px; line-height: 1.2; white-space: nowrap; transition: background-color .14s ease; }
+.nf .nf-roster .btn-sm:hover { background: #6a4df0; }
+.nf .nf-roster .btn-sm.sec { background: var(--rp-bg); color: #1a1a1a; border: 1px solid #ececec; font-weight: 600; }
+.nf .nf-roster .btn-txt { border: 0; background: transparent; color: var(--rp-muted); font-size: 13px; font-weight: 500; padding: 8px 6px; }
+.nf .nf-roster .btn-txt:hover { color: var(--rp-text); }
+
+/* Katie note */
+.nf .nf-roster .katie { margin-top: 16px; display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 12px; background: var(--rp-pill); font-size: 13px; color: #555; line-height: 1.5; }
+.nf .nf-roster .katie b { color: var(--rp-text); font-weight: 600; }
+.nf .nf-roster .katie .av { width: 28px; height: 28px; border-radius: 50%; background: var(--rp-accent-wash); color: var(--rp-accent); font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+.nf .nf-roster .katie.warn { background: var(--rp-warn-wash); }
+
+/* sections */
+.nf .nf-roster .sec { margin-top: 24px; }
+.nf .nf-roster .sec-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--rp-border); padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.nf .nf-roster .sec-head h3 { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -.1px; color: var(--rp-text); }
+.nf .nf-roster .sec-head h3 .n { color: var(--rp-muted); font-weight: 600; margin-left: 6px; }
+.nf .nf-roster .sec-head .hint { font-size: 13px; color: var(--rp-muted); }
+.nf .nf-roster .toggle { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: var(--rp-text-2); background: transparent; border: 0; padding: 0; }
+.nf .nf-roster .toggle .tr { width: 34px; height: 20px; border-radius: 999px; background: var(--rp-track); position: relative; transition: background-color .14s ease; flex: 0 0 auto; }
+.nf .nf-roster .toggle .tr::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: var(--rp-shadow); transition: transform .14s ease; }
+.nf .nf-roster .toggle[aria-checked="true"] .tr { background: var(--rp-accent); }
+.nf .nf-roster .toggle[aria-checked="true"] .tr::after { transform: translateX(14px); }
+.nf .nf-roster .toggle:disabled { opacity: .55; cursor: default; }
+
+.nf .nf-roster .apps { display: grid; gap: 10px; }
+.nf .nf-roster .app-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 12px 16px; border: 1px solid var(--rp-border); border-radius: 12px; background: var(--rp-bg); transition: opacity .18s ease, transform .18s ease; }
+.nf .nf-roster .app-row.gone { opacity: 0; transform: translateY(-4px); }
+.nf .nf-roster .who { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.nf .nf-roster .who .av { width: 34px; height: 34px; border-radius: 50%; background: var(--rp-pill); color: var(--rp-text-2); font-weight: 600; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; border: 1px solid #ebebeb; }
+.nf .nf-roster .who .av.p { background: var(--rp-accent-wash); color: var(--rp-accent); border-color: transparent; }
+.nf .nf-roster .who .t { min-width: 0; }
+.nf .nf-roster .who b { display: block; font-weight: 600; font-size: 14px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--rp-text); }
+.nf .nf-roster .who span { display: block; color: var(--rp-muted); font-size: 12px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nf .nf-roster .app-row .hist { font-size: 13px; color: var(--rp-text-2); line-height: 1.35; min-width: 0; }
+.nf .nf-roster .app-row .hist b { font-weight: 600; }
+.nf .nf-roster .app-row .hist span { display: block; color: var(--rp-muted); font-size: 12px; }
+.nf .nf-roster .app-row .act { display: flex; align-items: center; gap: 8px; }
+.nf .nf-roster .empty { padding: 18px; border: 1px dashed var(--rp-border); border-radius: 12px; color: var(--rp-muted); font-size: 13px; text-align: center; }
+
+.nf .nf-roster .roster-wrap { overflow-x: auto; border: 1px solid var(--rp-border); border-radius: 16px; background: var(--rp-bg); }
+.nf .nf-roster .roster { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 760px; }
+.nf .nf-roster .roster th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--rp-muted); padding: 12px 14px; border-bottom: 1px solid #ebebeb; white-space: nowrap; }
+.nf .nf-roster .roster td { padding: 10px 14px; border-bottom: 1px solid #ebebeb; vertical-align: middle; }
+.nf .nf-roster .roster tbody tr:last-child td { border-bottom: 0; }
+.nf .nf-roster .roster td.r, .nf .nf-roster .roster th.r { text-align: right; }
+.nf .nf-roster .roster .state { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; white-space: nowrap; }
+.nf .nf-roster .roster .state::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--rp-muted); }
+.nf .nf-roster .roster .state.posting::before { background: var(--rp-ok-b); }
+.nf .nf-roster .roster .state.lined::before { background: var(--rp-info); }
+.nf .nf-roster .roster .state.applied::before { background: var(--rp-accent); }
+.nf .nf-roster .roster .state.wait::before { background: var(--rp-warn); }
+.nf .nf-roster .roster .state.available { color: var(--rp-muted); }
+.nf .nf-roster .roster .state.available::before { background: var(--rp-border); }
+.nf .nf-roster .roster .muted { color: var(--rp-muted); }
+.nf .nf-roster .roster .late { color: var(--rp-warn); }
+.nf .nf-roster .roster tr.hidden-row { display: none; }
+.nf .nf-roster .show-all { margin-top: 10px; }
+.nf .nf-roster .show-all button { border: 0; background: transparent; color: var(--rp-accent); font-weight: 600; font-size: 13px; padding: 6px 0; }
+
+.nf .nf-roster .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(8px); z-index: 320; background: #111114; color: #e6e6ea; font-size: 13px; padding: 10px 14px; border-radius: 10px; opacity: 0; pointer-events: none; transition: opacity .15s ease, transform .15s ease; max-width: min(90vw, 520px); }
+.nf .nf-roster .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 900px) {
+  .nf .nf-roster .strip, .nf .nf-roster .strip.first, .nf .nf-roster .strip-more { grid-template-columns: 1fr; grid-template-rows: none; }
+  .nf .nf-roster .strip.first .mt:first-child { grid-row: auto; }
+  .nf .nf-roster .app-row { grid-template-columns: 1fr; }
+  .nf .nf-roster .page { padding: 104px 16px 48px; }
+}
+
+/* the roster's own day bar sits under the fork bar */
+.nf-roster-days { top: 64px; }

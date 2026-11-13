@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Months, not campaigns · prod today vs new design</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --ink: #1a1a1a; --ink2: #4a4a4a; --mute: #777; --line: rgba(26,26,26,0.1); --paper: #f4f2ef; --card: #fff; --new: #6a4df0; --newwash: #f1eeff; --ok: #17663f; --okwash: #e2f3e9; --warn: #8a4a12; --warnwash: #fff0ce; --open: #9b2c2c; --openwash: #fde8e8; }
+  body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.55; padding: 48px 24px 120px; }
+  .wrap { max-width: 1480px; margin: 0 auto; }
+  .narrow { max-width: 900px; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--new); margin-bottom: 10px; }
+  h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.3px; text-wrap: balance; }
+  h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.2px; margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--line); }
+  h3 { font-size: 16px; font-weight: 700; letter-spacing: -0.1px; }
+  p { max-width: 820px; }
+  .intro { margin-top: 10px; color: var(--ink2); }
+  .lede { margin-top: 10px; color: var(--ink2); }
+  code, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12.5px; }
+  code { background: rgba(26,26,26,0.06); padding: 1px 5px; border-radius: 5px; }
+  .live { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .live a { font-size: 13px; font-weight: 600; color: #333; background: #fff; border: 1px solid rgba(26,26,26,0.12); border-radius: 999px; padding: 6px 14px; text-decoration: none; }
+  .live a:hover { border-color: #9b9b9b; }
+  .live a.is-new { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .toc { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .toc a { font-size: 12px; font-weight: 600; color: #444; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; text-decoration: none; }
+  .toc a:hover { border-color: #b9b9b9; }
+
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; vertical-align: 1px; }
+  .tag.dec { background: var(--okwash); color: var(--ok); }
+  .tag.prop { background: var(--warnwash); color: var(--warn); }
+  .tag.open { background: var(--openwash); color: var(--open); }
+  .tag.fe { background: #e8eefc; color: #23439b; }
+  .tag.be { background: #ece9e4; color: #4a443b; }
+  .tag.copy { background: var(--newwash); color: var(--new); }
+
+  /* at a glance */
+  .glance { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .glance div { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+  .glance b { display: block; font-size: 14px; }
+  .glance span { display: block; margin-top: 4px; color: var(--ink2); font-size: 13px; }
+  .glance span .tag { display: inline-block; margin-top: 0; font-size: 11px; }
+
+  /* the rule */
+  .rule { margin-top: 18px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+  .box h3 { margin-bottom: 10px; }
+  pre { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12.5px; line-height: 1.6; background: #17171a; color: #e9e7e2; border-radius: 12px; padding: 16px 18px; overflow-x: auto; }
+  pre .c { color: #9b978e; }
+  pre .k { color: #c9b8ff; }
+  .steps { margin: 0 0 0 18px; color: var(--ink2); }
+  .steps li { margin-top: 6px; padding-left: 4px; }
+  .steps b { color: var(--ink); }
+  .calc { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 16px; align-items: center; margin-top: 6px; }
+  .calc label { font-weight: 600; }
+  .calc input { font: inherit; padding: 7px 10px; border: 1px solid rgba(26,26,26,0.2); border-radius: 9px; background: #fff; width: 170px; }
+  .calc dt { color: var(--mute); }
+  .calc dd { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .calc .big { font-size: 18px; color: var(--new); }
+  .calc .why { grid-column: 1 / -1; color: var(--ink2); font-weight: 400; font-size: 13px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .tablewrap { margin-top: 16px; overflow-x: auto; border-radius: 14px; }
+  th { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); padding: 10px 14px; border-bottom: 1px solid var(--line); background: #faf9f7; white-space: nowrap; }
+  td { padding: 10px 14px; border-bottom: 1px solid rgba(26,26,26,0.07); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td.num, th.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.hit td { background: #faf7ff; }
+  tr.hit td.name { color: var(--new); font-weight: 700; }
+  td.name { font-weight: 600; white-space: nowrap; }
+  td .was { color: var(--mute); text-decoration: line-through; margin-right: 6px; font-weight: 400; }
+  td.q { font-weight: 600; min-width: 190px; }
+  .note { margin-top: 10px; color: var(--mute); font-size: 13px; }
+
+  /* screens */
+  section.screen { margin-top: 44px; }
+  .head { display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 12px; max-width: 900px; }
+  .letter { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 13px; font-weight: 700; display: grid; place-items: center; }
+  .head h3 { line-height: 30px; }
+  .head p { grid-column: 2; margin-top: 2px; color: var(--ink2); }
+  .pair { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+  .pair.trio { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .pair.rail { grid-template-columns: repeat(2, 400px); justify-content: start; }
+  figure { min-width: 0; }
+  figcaption { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8a8a; }
+  figure.new figcaption { color: var(--new); }
+  figcaption a { font-weight: 600; letter-spacing: 0; text-transform: none; color: #777; text-decoration: none; }
+  figcaption a:hover { color: var(--ink); text-decoration: underline; }
+  .crop { position: relative; width: 100%; height: 220px; overflow: hidden; border-radius: 14px; border: 1px solid var(--line); background: #fafafa; box-shadow: 0 4px 14px rgba(0,0,0,0.04); }
+  figure.new .crop { border-color: rgba(106,77,240,0.45); box-shadow: 0 4px 18px rgba(106,77,240,0.10); }
+  .crop iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; pointer-events: none; opacity: 0; transition: opacity .2s ease; }
+  .crop.ready iframe { opacity: 1; }
+  .changes { margin-top: 14px; }
+  .changes td:first-child { width: 34px; color: var(--mute); font-weight: 700; }
+  .changes td.what { font-weight: 600; min-width: 150px; }
+  .changes td.old { color: var(--mute); min-width: 180px; }
+  .changes td.tags { white-space: nowrap; }
+  .changes td.tags .tag { margin-right: 4px; }
+
+  @media (max-width: 1180px) {
+    .rule, .pair, .pair.trio { grid-template-columns: minmax(0, 1fr); }
+    .pair.rail { grid-template-columns: minmax(0, 400px); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Brand portal · engineering handoff</div>
+  <h1>Months, not campaigns: prod today vs the new design</h1>
+  <p class="intro">Brands buy months of content, so each campaign is now named for the month its creator content starts going live. Nothing about how campaigns unlock or run changes. What changes is a name, one date, and a small timeline card. Every frame below is the live prototype: the left one renders what production shows today, the right one the new design.</p>
+  <p class="intro"><span class="tag dec">Updated Oct 2</span> The campaign is 8 weeks in total, first content is expected at week 6, and the campaign is named for the month of week 7, when most posts are going live (Julia). Before, first content was set at week 8. Every date, name and frame on this page uses the new timing.</p>
+  <div class="live">
+    <a class="is-new" href="./nf/months?rev=after&day=signed">Open the prototype, new design</a>
+    <a href="./nf/months/track?rev=after&day=week4">Open the campaign page (Dashboard)</a>
+    <a href="./nf/months?rev=before&day=signed">Open the prototype, prod today</a>
+  </div>
+  <div class="toc">
+    <a href="#glance">At a glance</a><a href="#rule">The rule</a><a href="#examples">Worked dates</a><a href="#screens">Screens</a><a href="#api">Backend</a><a href="#edges">Edge cases</a><a href="#same">Not changing</a><a href="#open">Open questions</a>
+  </div>
+
+  <h2 id="glance">At a glance</h2>
+  <p class="lede">Seven things change. Tags say who agreed what: <span class="tag dec">Decided</span> by Tony or Julia with the date, <span class="tag prop">Proposed</span> by the prototype and not yet agreed, <span class="tag open">Open</span> when someone has to answer.</p>
+  <div class="glance">
+    <div><b>1. A month name on every campaign</b><span>"October content", from the rule below. Before launch it sits in the tile title next to the number. <span class="tag dec">Tony · Sep 8, Sep 29</span></span></div>
+    <div><b>2. The name moves until launch</b><span>A ready campaign that is not launched is renamed by itself as days pass. It freezes at launch. <span class="tag dec">Tony · Sep 29</span></span></div>
+    <div><b>3. Named for week 7</b><span>The name is the month it is 7 weeks after launch, when most posts are going live. First content can land a few days before that month starts. <span class="tag dec">Julia · Oct 2</span></span></div>
+    <div><b>4. One date instead of a percent</b><span>Cards say "Week 4 of 8, first content expected the week of Oct 19", then "3 of 10 live". <span class="tag dec">Tony · Sep 8</span></span></div>
+    <div><b>5. The next campaign is always visible</b><span>The locked tile shows next to a ready one. Prod shows it only when nothing is ready. <span class="tag prop">Proposed</span></span></div>
+    <div><b>6. Setup opens directly</b><span>"Launch now" skips the intro screen. Setup itself does not change. <span class="tag dec">Tony · Sep 8</span></span></div>
+    <div><b>7. A Campaign timeline card</b><span>On the launch confirmation and at the top of the Dashboard's right rail. <span class="tag dec">Tony · Sep 8</span> <span class="tag prop">design</span></span></div>
+  </div>
+
+  <h2 id="rule">The rule</h2>
+  <p class="lede">One pure function. Everything on screen comes from the launch date. Today the portal has no dates at all on these surfaces: a card carries a number and a percent.</p>
+  <div class="rule">
+    <div class="box">
+      <h3>In words</h3>
+      <ol class="steps">
+        <li><b>Launch date.</b> The day the campaign was launched, in the brand's own time zone. Before launch: today for a ready campaign, the unlock date for a locked one.</li>
+        <li><b>The campaign is 8 weeks in total.</b> <span class="tag dec">Julia · Oct 2</span></li>
+        <li><b>First content expected</b> = launch date + 6 weeks (42 days). Shown as "week of" the Monday of that week, never as a single day. <span class="tag dec">Julia · Oct 2</span></li>
+        <li><b>Month name</b> = the month of week 7: the month it is 7 weeks (49 days) after launch. Week 6 has the first content, most posts go live in weeks 7 and 8, and the end of week 7 is the middle of those two weeks. <span class="tag dec">Julia · Oct 2</span></li>
+        <li><b>No separate month-end rule.</b> This replaces the Oct 1 "last 4 days" cut-off: when first content lands in the last week of a month, the name is already the next month.</li>
+        <li><b>Week</b> = whole weeks since launch, plus one. Shown as "Week 4 of 8", against the 8-week total.</li>
+        <li><b>Freeze at launch.</b> Until then the name is recomputed every day.</li>
+      </ol>
+<pre style="margin-top:14px"><span class="c"># proposed home: CampaignOverview::ContentMonth (no such code exists today)</span>
+CAMPAIGN_WEEKS      = 8    <span class="c"># "Week 4 of 8"</span>
+FIRST_CONTENT_WEEKS = 6
+NAME_WEEKS          = 7    <span class="c"># the month of week 7</span>
+
+<span class="k">def</span> timeline(launch_date, today)
+  first = launch_date + FIRST_CONTENT_WEEKS * 7   <span class="c"># first_content_expected_on</span>
+  {
+    first_content_expected_on: first,
+    week_of:       first.beginning_of_week(:monday),   <span class="c"># "week of Oct 19"</span>
+    content_month: (launch_date + NAME_WEEKS * 7).beginning_of_month,
+    week_number:   (today - launch_date).to_i / 7 + 1  <span class="c"># 1, 2 ... 8, then 9 ...</span>
+  }
+<span class="k">end</span>
+
+<span class="c"># launch_date, by state (dates in organization.campaign_cadence_time_zone)</span>
+<span class="c">#   launched campaign         launched_at.to_date    -> stored, never recomputed</span>
+<span class="c">#   available / saved / draft today                  -> moves every day</span>
+<span class="c">#   locked                    window_start_at.to_date</span></pre>
+    </div>
+    <div class="box">
+      <h3>Try a launch date</h3>
+      <div class="calc">
+        <label for="launch">Launch date</label><input id="launch" type="date" value="2026-10-13">
+      </div>
+      <dl class="calc" style="margin-top:14px">
+        <dt>First content expected</dt><dd id="o-first"></dd>
+        <dt>Shown to the brand as</dt><dd id="o-week"></dd>
+        <dt>Week 7 ends (7 weeks after launch)</dt><dd id="o-left"></dd>
+        <dt>Campaign name</dt><dd id="o-name" class="big"></dd>
+        <dd id="o-why" class="why"></dd>
+      </dl>
+      <h3 style="margin-top:22px">Where the 6 weeks come from</h3>
+      <div class="tablewrap" style="margin-top:8px"><table>
+        <tbody>
+          <tr><td class="q">Week 1</td><td>Match. Creators matched in 1 or 2 days, accepted in 1 or 2 more.</td></tr>
+          <tr><td class="q">Weeks 2 to 3</td><td>Ship. About 2 weeks for product to arrive.</td></tr>
+          <tr><td class="q">Weeks 4 to 5</td><td>Film. Creators have 10 days from delivery.</td></tr>
+          <tr><td class="q">Week 6</td><td>Review, and the first posts go live.</td></tr>
+          <tr><td class="q">Weeks 7 to 8</td><td>The rest of the posts go live. The campaign is 8 weeks in all.</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Julia, Oct 2. This replaces the Sep 8 call's "first content at 8 weeks".</p>
+      <h3 style="margin-top:22px">When the name and the first content differ</h3>
+      <p class="note" style="margin-top:0">Only when first content is expected in the last 7 days of a month. Then first content lands at the end of one month and the campaign is named for the next, where weeks 7 and 8 fall.</p>
+    </div>
+  </div>
+
+  <h3 id="examples" style="margin-top:36px">Worked dates</h3>
+  <p class="lede">Computed on this page with the same function. Purple rows are where first content lands the month before the name.</p>
+  <div class="tablewrap"><table id="examples-table">
+    <thead><tr><th>Launch</th><th>First content expected</th><th>Shown as</th><th>Week 7 ends</th><th>Campaign name</th><th>Why it is here</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <h2 id="screens">Screens: prod today vs new design</h2>
+  <p class="lede">Each screen lists exactly what changes. <span class="tag fe">FE</span> portal front end, <span class="tag be">BE</span> needs something from the API, <span class="tag copy">Copy</span> a string only.</p>
+
+  <section class="screen" id="s-first">
+    <div class="head"><span class="letter">A</span><h3>Campaigns overview, before the first launch</h3><p>Sep 8, the brand has just signed. Campaign 1 is ready.</p></div>
+    <div class="pair">
+      <figure><figcaption>Prod today <a href="./nf/months?rev=before&day=signed">Open</a></figcaption><div class="crop" data-src="nf/months?rev=before&day=signed&embed=1" data-sel=".overview-header, .campaign-group__cards"></div></figure>
+      <figure class="new"><figcaption>New design <a href="./nf/months?rev=after&day=signed">Open</a></figcaption><div class="crop" data-src="nf/months?rev=after&day=signed&embed=1&tile=fixed&scen=plan" data-sel=".overview-header, .campaign-group__cards"></div></figure>
+    </div>
+    <div class="tablewrap changes"><table>
+      <thead><tr><th></th><th>What</th><th>Prod today</th><th>New</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>A1</td><td class="what">Ready tile title</td><td class="old">Campaign 1</td><td>Campaign 1 | October content. The month is the rule applied to today.</td><td class="tags"><span class="tag fe">FE</span><span class="tag be">BE</span><span class="tag dec">Tony · Sep 29</span></td></tr>
+        <tr><td>A2</td><td class="what">Ready tile copy</td><td class="old">Your next campaign is ready to launch.</td><td>Two lines, same style. Line 1 stays: "Your next campaign is ready to launch." Line 2 is new: "Creator content will start going live in October." Only the month changes from tile to tile.</td><td class="tags"><span class="tag copy">Copy</span><span class="tag be">BE</span><span class="tag dec">Tony · Sep 29, Julia · Oct 2</span></td></tr>
+        <tr><td>A3</td><td class="what">Button</td><td class="old">Launch now, opens the intro screen</td><td>Launch now, opens setup directly and skips the intro screen ("Creator campaigns, made easy."). Setup itself does not change.</td><td class="tags"><span class="tag fe">FE</span><span class="tag dec">Tony · Sep 8</span></td></tr>
+        <tr><td>A4</td><td class="what">Next campaign</td><td class="old">Not shown. The locked tile appears only when nothing is ready.</td><td>Always shown under the ready tile: Campaign 2 | November content, "Unlocks Oct 8.", "in 30 days". Its month is the rule applied to its unlock date.</td><td class="tags"><span class="tag be">BE</span><span class="tag prop">Proposed</span></td></tr>
+        <tr><td>A5</td><td class="what">Countdown pill</td><td class="old">Sits 72px in from the right edge</td><td>Same right edge and width as the Launch now button above it.</td><td class="tags"><span class="tag fe">FE</span><span class="tag dec">Julia · Oct 1</span></td></tr>
+        <tr><td>A6</td><td class="what">Page subtitle</td><td class="old">Manage your active campaigns and creator relationships.</td><td>Each campaign shows the month its content starts going live. Manage your active campaigns and creator relationships.</td><td class="tags"><span class="tag copy">Copy</span><span class="tag prop">Proposed</span></td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">The locked tile was not in our production captures (it only shows when nothing is ready), so its prod wording is not shown here. The new wording is "Unlocks Oct 8." under the title.</p>
+  </section>
+
+  <section class="screen" id="s-running">
+    <div class="head"><span class="letter">B</span><h3>Campaigns overview, with campaigns running</h3><p>Oct 28. Campaign 1 is in week 7 with posts live, Campaign 2 is in week 3, Campaign 3 unlocks in 11 days.</p></div>
+    <div class="pair">
+      <figure><figcaption>Prod today <a href="./nf/months?rev=before&day=landed">Open</a></figcaption><div class="crop" data-src="nf/months?rev=before&day=landed&embed=1" data-sel=".overview-header, .campaign-group__cards"></div></figure>
+      <figure class="new"><figcaption>New design <a href="./nf/months?rev=after&day=landed">Open</a></figcaption><div class="crop" data-src="nf/months?rev=after&day=landed&embed=1&tile=fixed&scen=plan" data-sel=".overview-header, .campaign-group__cards"></div></figure>
+    </div>
+    <div class="tablewrap changes"><table>
+      <thead><tr><th></th><th>What</th><th>Prod today</th><th>New</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>B1</td><td class="what">Card pill</td><td class="old">Launched September 10</td><td>October content · launched Sep 10. The month is frozen at launch.</td><td class="tags"><span class="tag fe">FE</span><span class="tag be">BE</span><span class="tag dec">Tony · Sep 8</span></td></tr>
+        <tr><td>B2</td><td class="what">Card title</td><td class="old">Campaign 1</td><td>Campaign 1. Unchanged.</td><td class="tags"><span class="tag dec">Julia · Oct 1</span></td></tr>
+        <tr><td>B3</td><td class="what">Line under the title</td><td class="old">The campaign's title ("Fall Campaign")</td><td>What is happening now, from the stage counts: "3 posts live, 7 more on the way", "4 creators filming, 6 orders on the way". Rule in the Backend section.</td><td class="tags"><span class="tag be">BE</span><span class="tag prop">Proposed</span></td></tr>
+        <tr><td>B4</td><td class="what">Progress line, before the first post</td><td class="old">49% Complete</td><td>Week 3 of 8 · first content expected the week of Nov 23</td><td class="tags"><span class="tag fe">FE</span><span class="tag be">BE</span><span class="tag dec">Tony · Sep 8</span></td></tr>
+        <tr><td>B5</td><td class="what">Progress line, once a post is live</td><td class="old">71% Complete</td><td>3 of 10 live · first on Oct 21</td><td class="tags"><span class="tag fe">FE</span><span class="tag be">BE</span><span class="tag prop">Proposed</span></td></tr>
+        <tr><td>B6</td><td class="what">Bar</td><td class="old">Green, width = progress_percent</td><td>Before the first post: purple, width = week / 8. After: green, width = live / creators.</td><td class="tags"><span class="tag fe">FE</span><span class="tag prop">Proposed</span></td></tr>
+        <tr><td>B7</td><td class="what">Locked tile</td><td class="old">Campaign 3. Prod shows it here because nothing is ready.</td><td>Campaign 3 | December content, "Unlocks Nov 8."</td><td class="tags"><span class="tag fe">FE</span><span class="tag be">BE</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="screen" id="s-late">
+    <div class="head"><span class="letter">C</span><h3>A campaign that is launched late</h3><p>Oct 19. Campaign 2 has been ready since Oct 8, when it read November content. Launched today, first content is expected the week of Nov 30 and week 7 ends Dec 7, so it is December content. Campaign 3 unlocks in 20 days and is December too.</p></div>
+    <div class="pair">
+      <figure><figcaption>Prod today <a href="./nf/months?rev=before&day=slip">Open</a></figcaption><div class="crop" data-src="nf/months?rev=before&day=slip&embed=1" data-sel=".overview-header, .campaign-group__cards"></div></figure>
+      <figure class="new"><figcaption>New design <a href="./nf/months?rev=after&day=slip">Open</a></figcaption><div class="crop" data-src="nf/months?rev=after&day=slip&embed=1&tile=fixed&scen=plan" data-sel=".overview-header, .campaign-group__cards"></div></figure>
+    </div>
+    <div class="tablewrap changes"><table>
+      <thead><tr><th></th><th>What</th><th>Prod today</th><th>New</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>C1</td><td class="what">Name while not launched</td><td class="old">No name, so nothing moves</td><td>Recomputed from today on every load. No stored value until launch.</td><td class="tags"><span class="tag be">BE</span><span class="tag dec">Tony · Sep 29</span></td></tr>
+        <tr><td>C2</td><td class="what">Telling the brand</td><td class="old">Not applicable</td><td>Nothing. No "launch by" date, no "was November" note, no warning colour. The name simply reads December.</td><td class="tags"><span class="tag dec">Julia · Oct 1</span></td></tr>
+        <tr><td>C3</td><td class="what">Two campaigns, one month</td><td class="old">Not applicable</td><td>Allowed. Campaign 2 and Campaign 3 can both be December; the numbers tell them apart. No uniqueness check.</td><td class="tags"><span class="tag dec">Julia · Oct 1</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="screen" id="s-launch">
+    <div class="head"><span class="letter">D</span><h3>Launch confirmation</h3><p>The moment the name freezes. The brand gets the name, the one date, and the one thing they control.</p></div>
+    <div class="pair">
+      <figure><figcaption>Prod today <a href="./nf/launched?model=campaigns">Open</a></figcaption><div class="crop" data-src="nf/launched?model=campaigns&embed=1" data-sel=".sourcing-queue-confirmation-shell" data-maxh="560" data-pad="16"></div></figure>
+      <figure class="new"><figcaption>New design <a href="./nf/launched?model=months&rev=after&mnum=1&mmonth=October&mtoday=2026-09-08">Open</a></figcaption><div class="crop" data-src="nf/launched?model=months&rev=after&mnum=1&mmonth=October&mtoday=2026-09-08&embed=1" data-sel=".sourcing-queue-confirmation-shell" data-maxh="560" data-pad="16"></div></figure>
+    </div>
+    <div class="tablewrap changes"><table>
+      <thead><tr><th></th><th>What</th><th>Prod today</th><th>New</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>D1</td><td class="what">Line under "Your campaign is live!"</td><td class="old">The campaign's title</td><td>Campaign 1 | October content · the title</td><td class="tags"><span class="tag fe">FE</span><span class="tag be">BE</span><span class="tag prop">Proposed</span></td></tr>
+        <tr><td>D2</td><td class="what">Timeline card</td><td class="old">None</td><td>New card under the hero: "First content expected", "Week of Oct 19", a "Week 1 of 8" pill, eight week segments, five phases (Match 1 week, Ship 2, Film 2, Review 1, Post 2).</td><td class="tags"><span class="tag fe">FE</span><span class="tag be">BE</span><span class="tag dec">Julia · Sep 24</span></td></tr>
+        <tr><td>D3</td><td class="what">Quick tip</td><td class="old">None</td><td>"Quick tip: the biggest thing that speeds up your campaign is approving creators and content as soon as we send them over."</td><td class="tags"><span class="tag copy">Copy</span><span class="tag dec">Julia · Sep 24</span></td></tr>
+        <tr><td>D4</td><td class="what">Freeze the name</td><td class="old">Not applicable</td><td>At launch, store the month on the campaign next to <code>launched_at</code>. From here on it is read, never recomputed.</td><td class="tags"><span class="tag be">BE</span><span class="tag prop">Proposed</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="screen" id="s-dash">
+    <div class="head"><span class="letter">E</span><h3>Campaign page, Dashboard tab</h3><p>Oct 5, week 4. The Dashboard itself stays exactly as shipped: the percent line, the stage rail, the Creators card, Recent activity, Up next. One card is added and the header changes.</p></div>
+    <div class="pair">
+      <figure><figcaption>Prod today <a href="./nf/months/track?rev=before&day=week4">Open</a></figcaption><div class="crop" data-src="nf/months/track?rev=before&day=week4&embed=1" data-sel=".workflow-header, .am-progress, .am-rail" data-pad="16" data-maxh="640"></div></figure>
+      <figure class="new"><figcaption>New design <a href="./nf/months/track?rev=after&day=week4">Open</a></figcaption><div class="crop" data-src="nf/months/track?rev=after&day=week4&embed=1&tile=fixed&scen=plan" data-sel=".workflow-header, .am-progress, .am-rail" data-pad="16" data-maxh="640"></div></figure>
+    </div>
+    <div class="pair rail" style="margin-top:20px">
+      <figure class="new"><figcaption>The new card, collapsed <a href="./nf/months/track?rev=after&day=week4">Open</a></figcaption><div class="crop" data-src="nf/months/track?rev=after&day=week4&embed=1&tile=fixed&scen=plan" data-sel=".am-rail > .nfm-tl" data-pad="6" data-max="1"></div></figure>
+      <figure class="new"><figcaption>The new card, expanded <a href="./nf/months/track?rev=after&day=week4&tl=open">Open</a></figcaption><div class="crop" data-src="nf/months/track?rev=after&day=week4&embed=1&tl=open&tile=fixed&scen=plan" data-sel=".am-rail > .nfm-tl" data-pad="6" data-max="1"></div></figure>
+    </div>
+    <div class="tablewrap changes"><table>
+      <thead><tr><th></th><th>What</th><th>Prod today</th><th>New</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>E1</td><td class="what">Page title</td><td class="old">The campaign's title ("Fall Campaign")</td><td>An "October content" pill, then "Campaign 1".</td><td class="tags"><span class="tag fe">FE</span><span class="tag be">BE</span><span class="tag dec">Julia · Sep 24</span></td></tr>
+        <tr><td>E2</td><td class="what">Campaign timeline card</td><td class="old">None</td><td>First card of the right rail, above Recent activity. "First content expected", "Week of Oct 19", one progress line, five phase labels. After the first post: "First content went live", "Oct 21".</td><td class="tags"><span class="tag fe">FE</span><span class="tag be">BE</span><span class="tag dec">Tony · Sep 8</span></td></tr>
+        <tr><td>E3</td><td class="what">Progress line fill</td><td class="old">None</td><td>Five equal slots, one per phase. The fill ends inside the current phase: halfway for a one-week phase, a quarter then three quarters for a two-week phase. Full after week 8. It tracks the 8 weeks, not the first-content date.</td><td class="tags"><span class="tag fe">FE</span><span class="tag prop">Proposed</span></td></tr>
+        <tr><td>E4</td><td class="what">"See the full timeline"</td><td class="old">None</td><td>Expands in place. Each phase gets its dates from the launch date (week 1 = launch to launch + 6 days, and so on), the current one is marked Now, then "After week 8".</td><td class="tags"><span class="tag fe">FE</span><span class="tag dec">Tony · Sep 29</span></td></tr>
+        <tr><td>E5</td><td class="what">What the timeline claims</td><td class="old">None</td><td>It is the plan by calendar week. A phase is past, now or next by the week number only. It never reads creator stages, and it never turns red.</td><td class="tags"><span class="tag dec">Tony · Sep 8</span></td></tr>
+        <tr><td>E6</td><td class="what">Everything else</td><td class="old">Percent line, stage rail, Creators, Recent activity, Up next</td><td>Unchanged.</td><td class="tags"></td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">The prototype has a second version of the progress bar (eight week segments) behind the TIMELINE BAR switch. The continuous line is the default; the pick is open.</p>
+  </section>
+
+  <h2 id="api">Backend: what exists today, what to add</h2>
+  <p class="lede">Read from <code>beneble_app</code> at <code>origin/master</code> (Sep 22). No months work has landed: there is no <code>content_month</code>, no first-content date, and no timestamp for a campaign's first live post anywhere.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Piece</th><th>Today</th><th>Add or change</th><th></th></tr></thead>
+    <tbody>
+      <tr><td class="q">Overview payload<br><span class="mono" style="font-weight:400">CampaignOverview::OverviewService</span></td><td><code>active_campaigns[]</code>: id, number, display_number, title, status, launched_at, progress_percent.<br><code>opportunities[]</code>: number, display_number, state (available, saved, locked, draft), window_start_at, window_end_at, unlocks_in_days.<br><code>cadence</code>: mode, server_now, timezone, anchor_at, next_unlock_at.</td><td>On each active campaign: <code>content_month</code>, <code>first_content_expected_on</code>, <code>week_number</code>, <code>creators_count</code>, <code>live_count</code>, <code>first_live_on</code>, <code>status_line</code>.<br>On each opportunity: <code>content_month</code>.</td><td class="tags"><span class="tag prop">Proposed names</span></td></tr>
+      <tr><td class="q">Where the name is stored</td><td>Nothing. <code>launched_at</code> is set once in <code>Commands::Campaigns::Transition.publish</code> and never reset.</td><td>Write <code>content_month</code> on the campaign in the same place, at the same time. Storing it means a later change to the 6 or 7 weeks never renames a campaign that is already running.</td><td class="tags"><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Time zone</td><td><code>organizations.campaign_cadence_time_zone</code>, default America/New_York. Rails itself runs in UTC.</td><td>Take "today" and the launch date in that zone, on the server. The name of a ready campaign then changes at the brand's midnight, and the browser never computes it.</td><td class="tags"><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Locked tile<br><span class="mono" style="font-weight:400">CadenceService#monthly_opportunities_for</span></td><td>A locked slot is returned only when nothing is available or saved and there are no drafts.</td><td>Also return the next locked window when a campaign is ready, so the tile in A4 has data. The unlock rules themselves do not change.</td><td class="tags"><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">First live post</td><td>No field. Live posts (<code>BrandCollabCampaignLivePost</code>) have no posted date. Assignments have <code>verified_live_at</code> and <code>live_link_submitted_at</code>.</td><td><code>first_live_on</code> = the earliest of those across the campaign's assignments. <code>live_count</code> = assignments at the published slot or later.</td><td class="tags"><span class="tag open">Nisarg to pick the field</span></td></tr>
+      <tr><td class="q">Status line (B3)</td><td>The card shows the campaign title. Stage counts exist in <code>Dashboard::TrackerQuery</code> (the 7 slots).</td><td>First match wins: all posts live, "All 10 posts are live" · any live, "3 posts live, 7 more on the way" · any draft in or approved, "2 drafts in, 8 still filming" · any delivered, "8 creators filming, 2 orders on the way" (or "All 10 creators are filming") · otherwise "Product is on its way to 10 creators".</td><td class="tags"><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Dashboard percent</td><td><code>progress_percent</code> = sum of stage slots over creators x 7, capped at 99.</td><td>Unchanged, and still shown on the Dashboard ("54% through your campaign"). It only leaves the overview card.</td><td class="tags"></td></tr>
+      <tr><td class="q">Phases</td><td>None.</td><td>A front end constant: Match week 1, Ship weeks 2 to 3, Film 4 to 5, Review week 6, Post weeks 7 to 8. No API.</td><td class="tags"><span class="tag prop">Proposed</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="edges">Edge cases</h2>
+  <p class="lede">What happens, and where it differs from today. In prod none of these exist, because nothing on these screens is dated.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Case</th><th>What happens</th><th></th></tr></thead>
+    <tbody>
+      <tr><td class="q">First content lands in the last week of a month</td><td>The campaign has the next month's name, because week 7 ends there. Launch Oct 13: first content Nov 24, week 7 ends Dec 1, named December. Launch Oct 12: week 7 ends Nov 30, named November. The tile's sentence "will start going live in December" is then a few days late on the first post; shown as is.</td><td><span class="tag dec">Julia · Oct 2</span></td></tr>
+      <tr><td class="q">The Oct 1 "last 4 days" cut-off</td><td>Gone. Naming by week 7 covers it: first content on Nov 29 is still a December campaign.</td><td><span class="tag dec">Julia · Oct 2</span></td></tr>
+      <tr><td class="q">December into January</td><td>The name is the month only, no year: "January content". A launch on Nov 13 (week 7 ends Jan 1) is January.</td><td><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Ready but not launched</td><td>Named for launching today, so the name moves forward by itself. No date, note or colour tells the brand. It freezes at launch.</td><td><span class="tag dec">Tony · Sep 29, Julia · Oct 1</span></td></tr>
+      <tr><td class="q">Locked</td><td>Named for launching on its unlock date (<code>window_start_at</code>). On the day it unlocks it switches to "today" and reads the same.</td><td><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Draft, setup started but not launched</td><td>Same as ready: named for today until <code>launched_at</code> exists. A draft that sits for two weeks can change month. Setup does not show the month; the launch confirmation is where the brand reads the final name.</td><td><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Held campaign (state <code>saved</code>)</td><td>Same as ready: named for today. The one-held rule is untouched.</td><td><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Two campaigns with the same month</td><td>Allowed, no check. Happens after a late launch, or when a brand launches two campaigns a couple of weeks apart.</td><td><span class="tag dec">Julia · Oct 1</span></td></tr>
+      <tr><td class="q">"Week of" Monday is in the month before</td><td>Launch Sep 20: first content Nov 1, shown "week of Oct 26" on a November campaign. Shown as is.</td><td><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">The brand's midnight</td><td>Names and week numbers change at midnight in the organization's cadence time zone, not UTC and not the browser's.</td><td><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">First post earlier or later than expected</td><td>The name never changes after launch. The card switches from the week line to "N of M live · first on {date}" the day the first post is live.</td><td><span class="tag dec">Tony · Sep 8</span></td></tr>
+      <tr><td class="q">The expected week passes with nothing live</td><td>Weeks 7 and 8: the card keeps "Week 7 of 8 · first content expected the week of Oct 19", a date now behind us. No late state, no red.</td><td><span class="tag open">Tony: revisit lateness</span></td></tr>
+      <tr><td class="q">Week 9 and later</td><td>The 8 weeks are over. The card says "Week 9" with no "of 8", or keeps "N of M live" if posts are live. The Dashboard card marks "After week 8" as Now. The campaign is not closed by the calendar.</td><td><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Paused campaign</td><td>Weeks keep counting by the calendar. The name does not change.</td><td><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Campaigns already running on ship day</td><td>Named from their own <code>launched_at</code> by the same rule, in one backfill. Some will carry a month that has already started.</td><td><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Completed campaigns</td><td>Keep their name. The Completed tab is not redesigned here.</td><td><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Local and gift card campaigns</td><td>No month name, no timeline card. They stay exactly as today (<code>collab_type: local</code>, <code>reward_type: gift_card</code>). The 6 and 8 weeks describe the product flow.</td><td><span class="tag dec">Julia · Oct 1</span></td></tr>
+      <tr><td class="q">Brands without monthly billing</td><td>Cadence mode "unrestricted" always has one ready slot. It is named for today like any ready campaign.</td><td><span class="tag prop">Proposed</span></td></tr>
+      <tr><td class="q">Against what Tony has said</td><td>On Sep 8 Tony set first content at 8 weeks; it is now 6. His names mostly hold: a mid-September launch is still November content. Two differ: a launch on or before Sep 12 is October content, and a Sep 20 launch is November where he said December.</td><td><span class="tag open">Tony to confirm</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="same">Not changing</h2>
+  <div class="tablewrap"><table>
+    <tbody>
+      <tr><td class="q">When campaigns unlock</td><td>Calendar months from the brand's anchor date, one held campaign at most. <span class="tag dec">Tony · Sep 8</span></td></tr>
+      <tr><td class="q">Campaign numbers</td><td><code>display_number</code> stays, and now shows before launch too.</td></tr>
+      <tr><td class="q">The Dashboard</td><td>Percent line, stage rail, Creators card, Recent activity, Up next.</td></tr>
+      <tr><td class="q">Lateness</td><td>No at-risk, behind or overdue states anywhere. <span class="tag dec">Tony · Sep 8</span></td></tr>
+      <tr><td class="q">Planning months ahead</td><td>Not in this version. <span class="tag dec">Tony · Sep 8</span></td></tr>
+      <tr><td class="q">The availability email</td><td>Still "Your next Benable campaign is ready to launch!" with "anytime in the next 30 days". Whether it should name the month is open.</td></tr>
+      <tr><td class="q">Setup</td><td>Every setup screen is untouched: type, products, brief, creator matching. Only the intro screen before it is skipped.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="open">Open questions</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Question</th><th>What the prototype assumes</th><th>Who</th></tr></thead>
+    <tbody>
+      <tr><td class="q">Show the locked tile next to a ready one?</td><td>Yes (A4). Tony's note lists "Campaign 1 | November content" and "Campaign 2 | December content" on one screen. It is the only change to the cadence code.</td><td>Julia</td></tr>
+      <tr><td class="q">Status sentence under the card title, or keep the campaign title?</td><td>The sentence (B3). Keeping the title needs no new field.</td><td>Julia</td></tr>
+      <tr><td class="q">Is the campaign's own title still shown anywhere?</td><td>Only on the launch confirmation line (D1). It leaves the card and the page header.</td><td>Julia</td></tr>
+      <tr><td class="q">First content at 6 weeks, named for week 7?</td><td>Yes (Julia, Oct 2). Tony set first content at 8 weeks on Sep 8, so he should confirm. A mid-September launch stays November content.</td><td>Tony</td></tr>
+      <tr><td class="q">The expected week passes with nothing live: what does the brand read?</td><td>The same line, with the date now past. No late state.</td><td>Tony</td></tr>
+      <tr><td class="q">Which timestamp is "first post live"?</td><td>The earliest <code>verified_live_at</code>, falling back to <code>live_link_submitted_at</code>.</td><td>Nisarg</td></tr>
+      <tr><td class="q">Store the month at launch, or derive it each time?</td><td>Store it.</td><td>Nisarg</td></tr>
+      <tr><td class="q">Timeline bar: one line or eight segments?</td><td>One line.</td><td>Julia</td></tr>
+      <tr><td class="q">Should the availability email name the month?</td><td>Not in this change.</td><td>Julia, Tony</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<script>
+  /* ---------- the rule (same function as src/months/monthsEngine.js) ---------- */
+  const FIRST_CONTENT_WEEKS = 6, NAME_WEEKS = 7, DAY = 86400000;
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const SHORT = MONTHS.map((m) => m.slice(0, 3));
+  const at = (iso) => new Date(iso + 'T12:00:00');
+  const fmt = (d) => `${SHORT[d.getMonth()]} ${d.getDate()}`;
+  function rule(iso) {
+    const first = new Date(at(iso).getTime() + FIRST_CONTENT_WEEKS * 7 * DAY);
+    const monday = new Date(first); monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+    const named = new Date(at(iso).getTime() + NAME_WEEKS * 7 * DAY);   // the day week 7 ends
+    return { first, monday, named, differs: first.getMonth() !== named.getMonth(), firstMonth: MONTHS[first.getMonth()], name: MONTHS[named.getMonth()] };
+  }
+
+  const out = (id, v) => { document.getElementById(id).textContent = v; };
+  function calc() {
+    const iso = document.getElementById('launch').value;
+    if (!iso) return;
+    const r = rule(iso);
+    out('o-first', `${fmt(r.first)}, ${r.first.getFullYear()}`);
+    out('o-week', `Week of ${fmt(r.monday)}`);
+    out('o-left', fmt(r.named));
+    out('o-name', `${r.name} content`);
+    out('o-why', r.differs
+      ? `First content is expected at the end of ${r.firstMonth}, but week 7 ends ${fmt(r.named)}, so most posts go live in ${r.name}.`
+      : `First content and week 7 both fall in ${r.name}.`);
+  }
+  document.getElementById('launch').addEventListener('input', calc);
+  calc();
+
+  const EXAMPLES = [
+    ['2026-09-08', 'The brand signs and launches the same day'],
+    ['2026-09-12', 'Last launch day that is October content'],
+    ['2026-09-13', 'First launch day that is November content. First content still lands in October'],
+    ['2026-09-15', 'A mid-September launch. Tony has been calling this November content, and it is'],
+    ['2026-09-20', 'On Sep 8 Tony called this launch December. The rule says November'],
+    ['2026-10-12', 'Week 7 ends on the last day of November'],
+    ['2026-10-13', 'Week 7 ends Dec 1. First content is still expected in November'],
+    ['2026-10-19', 'The late launch in screen C'],
+    ['2026-11-12', 'Week 7 ends Dec 31'],
+    ['2026-11-13', 'Crosses the year: week 7 ends Jan 1'],
+    ['2027-01-10', 'Week 7 ends Feb 28'],
+    ['2027-01-11', 'Week 7 ends Mar 1'],
+  ];
+  document.querySelector('#examples-table tbody').innerHTML = EXAMPLES.map(([iso, why]) => {
+    const r = rule(iso);
+    return `<tr class="${r.differs ? 'hit' : ''}"><td class="num">${fmt(at(iso))}</td><td class="num">${fmt(r.first)}</td><td class="num">week of ${fmt(r.monday)}</td><td class="num">${fmt(r.named)}</td><td class="name">${r.name} content</td><td>${why}</td></tr>`;
+  }).join('');
+
+  /* ---------- live frames ----------
+     Each .crop holds the prototype in an iframe wider than the frame and shows only the part
+     named by data-sel: measured inside the iframe (same origin), scaled to the frame's width.
+     Deep links carry ?embed=1, so nothing writes to storage and a prod frame and a new frame
+     can sit side by side. */
+  const INNER_W = 1180, INNER_H = 1700;
+  function fit(crop) {
+    const frame = crop.querySelector('iframe');
+    const doc = frame.contentDocument;
+    if (!doc) return false;
+    const els = [...doc.querySelectorAll(crop.dataset.sel)];
+    if (!els.length) return false;
+    const pad = Number(crop.dataset.pad || 22);
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    els.forEach((el) => { const r = el.getBoundingClientRect(); if (!r.width || !r.height) return; x0 = Math.min(x0, r.left); y0 = Math.min(y0, r.top); x1 = Math.max(x1, r.right); y1 = Math.max(y1, r.bottom); });
+    if (!(x1 - x0 > 10 && y1 - y0 > 10)) return false;
+    x0 -= pad; y0 -= pad; x1 += pad; y1 += pad;
+    if (crop.dataset.maxh) y1 = Math.min(y1, y0 + Number(crop.dataset.maxh));
+    const max = Number(crop.dataset.max || 1.15);
+    const s = Math.min(max, crop.clientWidth / (x1 - x0));
+    frame.style.transform = `translate(${-x0 * s}px, ${-y0 * s}px) scale(${s})`;
+    crop.style.height = `${Math.round((y1 - y0) * s)}px`;
+    crop.classList.add('ready');
+    return true;
+  }
+  document.querySelectorAll('.crop').forEach((crop) => {
+    const frame = document.createElement('iframe');
+    frame.width = INNER_W; frame.height = INNER_H; frame.loading = 'lazy'; frame.title = crop.dataset.src; frame.tabIndex = -1;
+    frame.src = './' + crop.dataset.src;
+    crop.appendChild(frame);
+    let tries = 0;
+    const poll = () => { let ok = false; try { ok = fit(crop); } catch { /* not ready */ } if (tries++ < 80) setTimeout(poll, ok ? 1500 : 250); };
+    frame.addEventListener('load', poll);
+  });
+  let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => document.querySelectorAll('.crop.ready').forEach((c) => { try { fit(c); } catch { /* ok */ } }), 120); });
+</script>
+</body>
+</html>

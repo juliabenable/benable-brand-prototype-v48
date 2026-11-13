@@ -1,0 +1,190 @@
+/* Brand NPS ask (nps- prefix). Lives in BOTH CSS worlds: inside .nf on the new
+   chrome launch screen and in the unscoped old-chrome tracker rail. Both worlds
+   carry bare-element rules (button / label / p / input: pill radius, accent
+   fills, 700 labels, 10px paragraph margins, :active greys at up to (0,3,1)),
+   so every rule here rides on .nps .x (0,2,0) or doubled (.nps.nps) and
+   re-states each property those resets touch. Fonts inherit from the host chrome. */
+
+.nps { box-sizing: border-box; width: 100%; text-align: left; background: #fff; color: #1a1a1a; font-family: inherit; }
+.nps *, .nps *::before, .nps *::after { box-sizing: border-box; }
+@keyframes nps-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* skins: the rail card wears the tracker's am-card anatomy (grey head strip, no
+   icon tile, 30px pills: Julia's locked picks); the launch card wears
+   production's confirmation-card anatomy */
+.nps.nps--rail { border: 1px solid #e3e3e3; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03); animation: cp-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.cp-tile-stack > .nps.nps--rail { margin-bottom: 4px; } /* the stack gaps 16, the rail's own cards sit 20 apart */
+.nps.nps--nf { border: 1px solid rgba(228, 228, 228, 0.95); border-radius: 20px; box-shadow: 0 14px 40px #1717170f; }
+.nps.nps--page { border: 1px solid #ebebeb; border-radius: 20px; box-shadow: 0 14px 40px #1717170f; max-width: 560px; margin: 0 auto; }
+
+.nps .nps-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.nps.nps--rail .nps-head { align-items: center; min-height: 64px; padding: 10px 14px 10px 20px; border-bottom: 1px solid #e3e3e3; }
+.tf-heads-grey .nps.nps--rail .nps-head { background: #f8f9fa; }
+.nps.nps--nf .nps-head, .nps.nps--page .nps-head { padding: 24px 18px 0 24px; }
+.nps .nps-head-l { min-width: 0; }
+.nps .nps-title { margin: 0; font-size: 14px; font-weight: 700; line-height: 1.3; color: #000; }
+.nps.nps--nf .nps-title, .nps.nps--page .nps-title { font-weight: 600; color: #1a1a1a; }
+.nps .nps-sub { margin: 2px 0 0; font-size: 12px; font-weight: 400; line-height: 1.4; color: #717171; }
+.nps.nps--nf .nps-sub, .nps.nps--page .nps-sub { font-size: 13px; color: #555; }
+
+.nps .nps-x { flex: none; display: grid; place-items: center; width: 28px; height: 28px; margin: -2px 0 0; padding: 0; border: 0; border-radius: 8px; background: transparent; color: #8a8f98; cursor: pointer; }
+.nps.nps .nps-x:hover, .nps.nps .nps-x:active { background: #f4f4f5; color: #1a1a1a; }
+.nps .nps-x:focus-visible { outline: 2px solid #7a5cfa; outline-offset: 1px; }
+
+.nps.nps--rail .nps-body { padding: 14px 20px 16px; }
+.nps.nps--nf .nps-body, .nps.nps--page .nps-body { padding: 14px 24px 24px; }
+
+.nps .nps-q { margin: 0 0 12px; font-size: 13.5px; font-weight: 600; line-height: 1.4; color: #1a1a1a; text-wrap: pretty; }
+.nps.nps--nf .nps-q, .nps.nps--page .nps-q { font-size: 15px; letter-spacing: -0.01em; }
+
+/* ONE joined 0 to 10 control, neutral: eleven separate chips read as chip soup
+   in a 370px rail, and color would tell people which answers are bad */
+.nps .nps-scale { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 0; border: 1px solid #dfe1e6; border-radius: 10px; overflow: hidden; background: #fff; }
+.nps .nps-n { display: grid; place-items: center; height: 36px; min-width: 0; margin: 0; padding: 0; border: 0; border-left: 1px solid #e6e8ec; border-radius: 0; background: #fff; color: #1a1a1a; font-family: inherit; font-size: 13px; font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; text-transform: none; letter-spacing: 0; box-shadow: none; cursor: pointer; transition: background-color 0.12s, color 0.12s; }
+.nps .nps-n:first-child { border-left: 0; }
+.nps.nps--nf .nps-n, .nps.nps--page .nps-n { height: 40px; font-size: 14px; }
+.nps.nps .nps-n:hover, .nps.nps .nps-n:active { background: #f7f7f8; }
+.nps .nps-n:focus-visible { outline: 2px solid #7a5cfa; outline-offset: -2px; position: relative; z-index: 1; }
+.nps.nps .nps-n.nps-n--on, .nps.nps .nps-n.nps-n--on:hover, .nps.nps .nps-n.nps-n--on:active { background: #7a5cfa; border-left-color: #7a5cfa; color: #fff; font-weight: 600; }
+.nps.nps--scored .nps-n:not(.nps-n--on) { color: #9a9fa8; }
+.nps .nps-poles { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 6px; font-size: 11.5px; line-height: 1.3; color: #717171; }
+.nps .nps-saved { font-size: 11.5px; font-weight: 500; color: #17864f; }
+
+.nps .nps-follow { margin-top: 14px; padding-top: 14px; border-top: 1px solid #ececec; animation: nps-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.nps .nps-follow-label { display: block; max-width: none; margin: 0 0 8px; font-size: 13px; font-weight: 600; line-height: 1.4; color: #1a1a1a; }
+.nps .nps-note { display: block; width: 100%; min-height: 64px; margin: 0; padding: 10px 12px; border: 1px solid #dfe1e6; border-radius: 10px; background: #fff; color: #1a1a1a; font-family: inherit; font-size: 13px; font-weight: 400; line-height: 1.45; resize: vertical; overflow: auto; box-shadow: none; }
+.nps .nps-note::placeholder { color: #9a9fa8; }
+.nps .nps-note:focus { outline: none; border-color: #7a5cfa; box-shadow: 0 0 0 3px rgba(122, 92, 250, 0.14); }
+.nps .nps-check { display: flex; align-items: center; gap: 8px; max-width: none; margin: 10px 0 0; font-size: 13px; font-weight: 400; line-height: 1.35; color: #4b5563; cursor: pointer; }
+/* production's checkbox: 16px, 4px radius, 1.5px #c6c6c6 */
+.nps.nps .nps-check input { appearance: none; -webkit-appearance: none; display: inline-grid; place-content: center; flex: none; width: 16px; height: 16px; margin: 0; padding: 0; border: 1.5px solid #c6c6c6; border-radius: 4px; background: #fff; cursor: pointer; }
+.nps.nps .nps-check input:checked { background: #7a5cfa; border-color: #7a5cfa; }
+.nps.nps .nps-check input:checked::after { content: ''; width: 8px; height: 5px; margin-top: -2px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg); }
+.nps.nps .nps-check input:focus-visible { outline: 2px solid #7a5cfa; outline-offset: 2px; }
+.nps .nps-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 12px; }
+.nps .nps-reads { margin: 0; font-size: 11.5px; font-weight: 400; line-height: 1.4; color: #8a8f98; }
+/* production primaries are pills */
+.nps .nps-btn { flex: none; height: 30px; margin: 0; padding: 0 16px; border: 1px solid #7a5cfa; border-radius: 999px; background: #7a5cfa; color: #fff; font-family: inherit; font-size: 12.5px; font-weight: 600; line-height: 1; text-transform: none; box-shadow: none; cursor: pointer; }
+.nps.nps--nf .nps-btn, .nps.nps--page .nps-btn { height: 40px; padding: 0 22px; font-size: 14px; }
+.nps.nps .nps-btn:hover, .nps.nps .nps-btn:active { background: #6b4df0; border-color: #6b4df0; }
+.nps .nps-btn:focus-visible { outline: 2px solid #7a5cfa; outline-offset: 2px; }
+
+/* answered: ONE quiet line, so a thank-you never parks above the rail's real content */
+.nps.nps--done { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px 12px 20px; }
+.nps.nps--nf.nps--done, .nps.nps--page.nps--done { padding: 16px 18px 16px 24px; }
+.nps .nps-receipt { margin: 0; font-size: 12.5px; font-weight: 400; line-height: 1.45; color: #555; }
+.nps .nps-receipt b { font-weight: 600; color: #1a1a1a; }
+.nps .nps-link { display: inline; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: #7a5cfa; font-family: inherit; font-size: inherit; font-weight: 500; line-height: inherit; text-decoration: underline; text-underline-offset: 2px; box-shadow: none; cursor: pointer; }
+.nps.nps .nps-link:hover, .nps.nps .nps-link:active { background: transparent; color: #6b4df0; }
+.nps .nps-link:focus-visible { outline: 2px solid #7a5cfa; outline-offset: 2px; border-radius: 4px; }
+
+@media (max-width: 760px) {
+  .nps.nps--nf .nps-head, .nps.nps--page .nps-head { padding: 20px 14px 0 20px; }
+  .nps.nps--nf .nps-body, .nps.nps--page .nps-body { padding: 14px 20px 20px; }
+}
+@media (max-width: 560px) {
+  .nps.nps--nf .nps-head, .nps.nps--page .nps-head { padding: 16px 10px 0 16px; }
+  .nps.nps--nf .nps-body, .nps.nps--page .nps-body { padding: 14px 16px 18px; }
+  /* one tall row on a phone, never two rows split at 6 */
+  .nps.nps--nf .nps-n, .nps.nps--page .nps-n { height: 44px; font-size: 13px; }
+  .nps .nps-actions { flex-direction: column-reverse; align-items: stretch; }
+  .nps .nps-actions .nps-btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .nps.nps--rail, .nps .nps-follow { animation: none; } }
+
+/* ---------- the email twin (/nf/nps-mail, /nf/nps-answer/:moment) ----------
+   Standalone pages outside .nf, so production.css's bare button/p/label rules
+   apply: every rule re-states what those touch. */
+.npm-page { position: fixed; inset: 0; overflow: auto; z-index: 20; background: #f3f4f6; color: #1a1a1a; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 76px 20px 60px; box-sizing: border-box; }
+.npm-page *, .npm-page *::before, .npm-page *::after { box-sizing: border-box; }
+.npm-page.npm-page--answer { background: #fff; padding-top: 56px; }
+
+.npm-page .npm-bar { position: fixed; top: 14px; left: 12px; right: 12px; width: fit-content; margin: 0 auto; z-index: 300; display: flex; align-items: center; gap: 4px; max-width: calc(100vw - 24px); flex-wrap: wrap; justify-content: center; background: #211d2ae8; backdrop-filter: blur(10px); border-radius: 20px; padding: 5px 9px; box-shadow: 0 10px 30px #00000038; }
+.npm-page .npm-bar-tag { font-size: 9.5px; font-weight: 700; letter-spacing: 0.13em; color: #b7aede; padding: 0 7px 0 5px; white-space: nowrap; }
+.npm-page .npm-bar-btn { margin: 0; border: none; background: none; cursor: pointer; border-radius: 999px; padding: 5px 11px; font-family: inherit; font-size: 12.5px; font-weight: 600; line-height: 1.3; color: #cfc8e6; white-space: nowrap; }
+.npm-page .npm-bar-btn:hover { color: #fff; background: #ffffff1c; }
+.npm-page .npm-bar-btn.npm-bar-btn--on { background: #7a5cfa; color: #fff; box-shadow: 0 4px 12px #7a5cfa73; }
+.npm-page .npm-bar-sep { width: 1px; height: 16px; margin: 0 4px; background: #ffffff2e; }
+
+.npm-page .npm-client { max-width: 680px; margin: 0 auto; background: #fff; border: 1px solid #e3e5e8; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(16, 24, 40, 0.06); }
+.npm-page .npm-client-top { display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: #f7f7f8; border-bottom: 1px solid #ececec; }
+.npm-page .npm-dot { width: 10px; height: 10px; border-radius: 50%; background: #d9dbe0; display: block; }
+.npm-page .npm-client-title { margin-left: 8px; font-size: 12px; color: #717171; }
+.npm-page .npm-mail { padding: 26px 32px 34px; }
+.npm-page .npm-subject { margin: 0 0 16px; font-size: 21px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; color: #1a1a1a; }
+.npm-page .npm-from { display: flex; align-items: center; gap: 12px; padding-bottom: 18px; border-bottom: 1px solid #ececec; }
+.npm-page .npm-avatar { display: block; width: 36px; height: 36px; flex: none; border-radius: 50%; object-fit: cover; background: #f3efff; }
+.npm-page .npm-from-name { margin: 0; font-size: 13.5px; font-weight: 600; color: #1a1a1a; }
+.npm-page .npm-from-name span { font-weight: 400; color: #717171; }
+.npm-page .npm-from-to { margin: 2px 0 0; font-size: 12px; font-weight: 400; color: #717171; }
+.npm-page .npm-body { padding-top: 20px; max-width: 520px; }
+.npm-page .npm-p { margin: 0 0 14px; font-size: 15px; font-weight: 400; line-height: 1.55; color: #333; }
+.npm-page .npm-p b { font-weight: 600; color: #1a1a1a; }
+.npm-page .npm-cta { display: inline-block; height: 40px; margin: 4px 0 0; padding: 0 20px; border: 0; border-radius: 999px; background: #7a5cfa; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; line-height: 1; cursor: pointer; }
+.npm-page .npm-cta:hover { background: #6b4df0; }
+
+.npm-page .npm-ask { margin: 28px 0 0; padding: 22px 0 0; border-top: 1px solid #ececec; }
+.npm-page .npm-ask-k { margin: 0 0 6px; font-size: 12px; font-weight: 500; letter-spacing: 0.02em; color: #717171; }
+.npm-page .npm-ask-q { margin: 0 0 14px; font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.01em; color: #1a1a1a; }
+.npm-page .npm-scale { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 0; border: 1px solid #dfe1e6; border-radius: 10px; overflow: hidden; }
+.npm-page .npm-n { display: grid; place-items: center; height: 42px; min-width: 0; margin: 0; padding: 0; border: 0; border-left: 1px solid #e6e8ec; border-radius: 0; background: #fff; color: #1a1a1a; font-family: inherit; font-size: 14px; font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; cursor: pointer; }
+.npm-page .npm-n:first-child { border-left: 0; }
+.npm-page.npm-page .npm-n:hover, .npm-page.npm-page .npm-n:active { background: #f7f7f8; }
+.npm-page.npm-page .npm-n.npm-n--on, .npm-page.npm-page .npm-n.npm-n--on:active { background: #7a5cfa; border-left-color: #7a5cfa; color: #fff; }
+.npm-page .npm-n:focus-visible { outline: 2px solid #7a5cfa; outline-offset: -2px; position: relative; z-index: 1; }
+.npm-page .npm-poles { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: #717171; }
+.npm-page .npm-sign { margin: 18px 0 0; font-size: 15px; font-weight: 400; color: #333; }
+.npm-page .npm-legal { margin: 28px 0 0; padding-top: 16px; border-top: 1px solid #ececec; font-size: 12px; font-weight: 400; line-height: 1.5; color: #9a9fa8; }
+
+.npm-page .npm-answer { max-width: 560px; margin: 0 auto; }
+.npm-page .npm-brandline { display: flex; align-items: center; gap: 8px; margin: 0 0 22px; font-size: 15px; font-weight: 600; color: #1a1a1a; }
+.npm-page .npm-brandline img { display: block; height: 24px; width: auto; }
+.npm-page .npm-foot { margin: 16px 2px 0; font-size: 12.5px; font-weight: 400; line-height: 1.5; color: #717171; }
+.npm-page .npm-demo { max-width: 560px; margin: 40px auto 0; font-size: 12px; color: #9a9fa8; }
+.npm-page.npm-page .npm-link:hover, .npm-page.npm-page .npm-link:active { background: transparent; }
+.npm-page .npm-link:focus-visible { outline: 2px solid #7a5cfa; outline-offset: 2px; border-radius: 4px; }
+.npm-page .npm-link { display: inline; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: #7a5cfa; font-family: inherit; font-size: inherit; font-weight: 500; line-height: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+
+@media (max-width: 560px) {
+  .npm-page .npm-mail { padding: 20px 18px 26px; }
+  .npm-page .npm-n { height: 44px; font-size: 13px; }
+}
+.npm-page .npm-reads { margin: 10px 0 0; font-size: 12px; font-weight: 400; line-height: 1.4; color: #8a8f98; }
+
+/* ---------- the corner slide-up (npc-), Airtable's pattern, Sep 24 2026 ----------
+   Portaled to body, so it sits in the unscoped world: production.css's bare
+   button / textarea / p rules apply and every property they touch is re-stated. */
+.npc { position: fixed; right: 20px; bottom: 20px; z-index: 250; box-sizing: border-box; width: 432px; max-width: calc(100vw - 32px); padding: 18px 20px 16px; background: #fff; border: 1px solid #e3e3e3; border-radius: 12px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14); color: #1a1a1a; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; animation: npc-up 0.32s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.npc *, .npc *::before, .npc *::after { box-sizing: border-box; }
+@keyframes npc-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.npc .npc-x { position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 28px; height: 28px; margin: 0; padding: 0; border: 0; border-radius: 8px; background: transparent; color: #8a8f98; box-shadow: none; cursor: pointer; }
+.npc.npc .npc-x:hover, .npc.npc .npc-x:active { background: #f4f4f5; color: #1a1a1a; }
+.npc .npc-q { margin: 0 0 14px; padding-right: 28px; font-size: 15px; font-weight: 600; line-height: 1.35; color: #1a1a1a; }
+.npc .npc-sub { margin: -8px 0 12px; font-size: 13px; font-weight: 400; line-height: 1.45; color: #555; }
+/* eleven SEPARATE chips with gaps: Airtable's scale, kept for the comparison */
+.npc .npc-scale { display: flex; gap: 6px; }
+.npc .npc-n { flex: 1 1 0; min-width: 0; height: 34px; margin: 0; padding: 0; border: 1px solid #d9dbe0; border-radius: 8px; background: #fff; color: #1a1a1a; font-family: inherit; font-size: 13px; font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; text-transform: none; letter-spacing: 0; box-shadow: none; cursor: pointer; transition: background-color 0.12s, border-color 0.12s; }
+.npc.npc .npc-n:hover, .npc.npc .npc-n:active { border-color: #b9b3d6; background: #f7f7f8; }
+.npc.npc .npc-n.npc-n--on, .npc.npc .npc-n.npc-n--on:hover, .npc.npc .npc-n.npc-n--on:active { background: #7a5cfa; border-color: #7a5cfa; color: #fff; font-weight: 600; }
+.npc .npc-n:focus-visible { outline: 2px solid #7a5cfa; outline-offset: 2px; }
+.npc .npc-poles { display: flex; justify-content: space-between; gap: 12px; margin-top: 6px; font-size: 11.5px; line-height: 1.3; color: #717171; }
+.npc .npc-foot { display: flex; justify-content: flex-end; margin-top: 14px; }
+.npc .npc-btn { height: 36px; margin: 0; padding: 0 16px; border: 1px solid #7a5cfa; border-radius: 8px; background: #7a5cfa; color: #fff; font-family: inherit; font-size: 13px; font-weight: 600; line-height: 1; text-transform: none; box-shadow: none; cursor: pointer; }
+.npc.npc .npc-btn:hover, .npc.npc .npc-btn:active { background: #6b4df0; border-color: #6b4df0; }
+.npc.npc .npc-btn:disabled { opacity: 0.4; cursor: default; background: #7a5cfa; border-color: #7a5cfa; }
+.npc .npc-btn.npc-btn--wide { width: 100%; height: 40px; margin-top: 14px; }
+.npc .npc-note { display: block; width: 100%; min-height: 104px; margin: 0; padding: 10px 12px; border: 1px solid #d9dbe0; border-radius: 8px; background: #fff; color: #1a1a1a; font-family: inherit; font-size: 13px; font-weight: 400; line-height: 1.45; resize: vertical; overflow: auto; box-shadow: none; }
+.npc .npc-note::placeholder { color: #9a9fa8; }
+.npc .npc-note:focus { outline: none; border-color: #7a5cfa; box-shadow: 0 0 0 3px rgba(122, 92, 250, 0.14); }
+.npc .npc-thanks { margin: 0; padding-right: 8px; font-size: 14px; font-weight: 400; line-height: 1.45; color: #555; }
+.npc .npc-thanks b { font-weight: 600; color: #1a1a1a; }
+/* demo chrome only: the tracker's day scrubber sits bottom center, so the corner card rides above it there */
+body:has(.cp-scrubber) .npc { bottom: 72px; }
+/* the launch-screen host is empty under the corner fork: no gap for an empty box */
+[data-nf-nps]:empty { display: none; }
+@media (max-width: 560px) {
+  .npc { right: 12px; left: 12px; bottom: 12px; width: auto; max-width: none; padding: 16px 16px 14px; }
+  .npc .npc-scale { gap: 3px; }
+  .npc .npc-n { height: 40px; border-radius: 6px; font-size: 12.5px; }
+}
+@media (prefers-reduced-motion: reduce) { .npc { animation: none; } }
