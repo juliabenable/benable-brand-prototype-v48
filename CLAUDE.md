@@ -79,8 +79,9 @@ ideal is that they would be able to swipe right/left for each varient" + Figma D
   arrow keys and mouse drag work on desktop; touch uses native scrolling. One product = one plain full-width tile.
   Round 1 (small cards inside one card) is in git history, commit b9247ca.
 - TWO SWIPE STYLES, same tiles (round 3, Julia Nov 13 picked "Show the deck" when offered):
-  `?swipe=deck` or the "Swipe style" switch in the desktop rail. DEFAULT is still side by side; which one wins is
-  OPEN, hers to call.
+  `?swipe=deck` or the "Swipe style" switch in the desktop rail. DECIDED Nov 13: SIDE BY SIDE is the one to build
+  (asked "Is side by side the swipe style Nathan should build?", Julia answered "Yes, side by side"). The deck
+  stays in the study view only and is listed under "Not in this build" in the mobile handoff doc.
   - Side by side (default): the row above, native scroll + snap.
   - Stacked deck: the pattern from the favorite-things deck she liked (`../favorite-things-asks-study`, `.stack`
     + `.edge`). The open tile is on top at FULL width (it lines up with its neighbours on both sides); the other
@@ -97,14 +98,21 @@ ideal is that they would be able to swipe right/left for each varient" + Figma D
   that wording is mine, PROPOSED); a tile with nothing cut has no link. A tile closes again 220ms after you leave
   it (closing mid-swipe made the page jump). A line = one bullet, not a line of wrapped text; she kept 3 after
   seeing it built that way, which is not the same as her saying so. The mouse drag only captures the pointer after 4px, so a click on the link stays a click.
-- MOBILE HANDOFF (Nov 13, Julia: "build the minimal doc I should send to Nathan to answer all his questions",
-  "for mobile"; Nathan = mobile engineer). The doc is a Claude Doc, PRIVATE until Julia shares it:
-  https://claude.ai/artifact/SK3TNmp6nQYiFUZDoGGpxQ ("Hook ideas by product: mobile handoff for Nathan"). It links
-  to `creator-brief.html?handoff=1#hooks`: the handoff view of this page, decided things only (no PROPOSED tag, no
-  swipe-style switch, always side by side; `.study-only` / `.handoff-only` in the rail). Her rule for engineers:
-  nothing tagged Proposed reaches them, undecided things go under "Not in this build". No question from Nathan
-  about this was found in Slack or the Nov 11 to 13 meetings, so the doc answers the questions a mobile build
-  raises. The doc image is `creator-brief/shots/handoff-tile-states.png`.
+- MOBILE HANDOFF PAGE (Nov 13, Julia: "build the minimal doc I should send to Nathan to answer all his questions",
+  "for mobile", then "push it on github i don't want a claude thing"; Nathan = mobile engineer):
+  `public/mobile-handoff.html` ← `creator-brief/src/mobile-handoff.src.html` via the same `build.py`.
+  Live: https://juliabenable.github.io/benable-brand-prototype-v48/mobile-handoff.html (noindex). Lead, one picture
+  (the tile before / after Show more, `creator-brief/assets/handoff-tile-states.png`), a 10-row questions table, a
+  sizes table, "Not in this build". It links to `creator-brief.html?handoff=1#hooks`: the handoff view of the
+  prototype, decided things only (no PROPOSED tag, no swipe-style switch, always side by side; `.study-only` /
+  `.handoff-only` in the rail). Her rule for engineers: nothing tagged Proposed reaches them, undecided things go
+  under "Not in this build". No question from Nathan about this was found in Slack or the Nov 11 to 13 meetings,
+  so the page answers the questions a mobile build raises. A first copy was written as a Claude doc; she did not
+  want that, the page in this repo is the handoff.
+  In the page as fact but not yet confirmed by her: placement between Campaign Brief and Brand Guidelines,
+  "Show less" + the tile folding back when you swipe away, one product = plain tile without dots, empty lists
+  hidden, product campaigns only. Confirmed: side by side, three lines, HOOK IDEAS, no title, creators see every
+  product's tile.
 - Deviations from the Figma frame, on purpose: both products are named "Big Dulce" there (placeholder), here they
   carry the pack names so the pages can be told apart; the affiliate confetti banner is a 1x render, not a rebuild.
 - Copy, JULIA'S RULING (Nov 13, after seeing the tiles): "remove the title "Hooks"" and "rename the "Hook"

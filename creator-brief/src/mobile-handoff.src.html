@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hook ideas by product: mobile handoff</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<!-- Built by creator-brief/build.py from creator-brief/src/mobile-handoff.src.html. Edit the source, not this file. Decided things only, no long dashes. -->
+<style>
+/*INTER*/
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:#1c1c1c; background:#fff; line-height:1.55; -webkit-font-smoothing:antialiased; }
+main { max-width:780px; margin:0 auto; padding:56px 24px 96px; }
+.eyebrow { font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:#7a5cfa; }
+h1 { margin:10px 0 6px; font-size:30px; line-height:36px; font-weight:600; letter-spacing:-.4px; }
+.date { font-size:14px; color:#717171; }
+.lead { margin:22px 0 0; font-size:18px; line-height:28px; color:#1c1c1c; }
+h2 { margin:44px 0 14px; font-size:20px; line-height:26px; font-weight:600; letter-spacing:-.1px; }
+p { margin:0 0 12px; font-size:15px; color:#3a3a3a; }
+a { color:#5c3fe3; text-underline-offset:2px; }
+figure { margin:0 0 18px; }
+figure img { display:block; width:100%; height:auto; border-radius:16px; border:1px solid #ececec; }
+figcaption { margin-top:8px; font-size:13px; color:#717171; }
+table { width:100%; border-collapse:collapse; font-size:14.5px; }
+th { padding:8px 16px 8px 0; text-align:left; font-size:12px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:#717171; border-bottom:1px solid #e3e3e3; }
+td { padding:13px 16px 13px 0; vertical-align:top; color:#3a3a3a; border-bottom:1px solid #efefef; }
+td:first-child { width:32%; font-weight:600; color:#1c1c1c; }
+td:last-child, th:last-child { padding-right:0; }
+ul { margin:0; padding-left:20px; font-size:15px; color:#3a3a3a; }
+li { margin-bottom:8px; }
+/* on a phone each row becomes the question, then its answer */
+@media (max-width:560px) {
+  main { padding:36px 20px 72px; }
+  h1 { font-size:26px; line-height:32px; }
+  .lead { font-size:17px; line-height:26px; }
+  table, tbody, tr, td { display:block; width:100%; }
+  thead { display:none; }
+  tr { padding:12px 0; border-bottom:1px solid #efefef; }
+  td { padding:0; border:0; }
+  td:first-child { width:100%; margin-bottom:4px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Mobile handoff</div>
+  <h1>Hook ideas by product</h1>
+  <div class="date">Nov 13, 2026</div>
+  <p class="lead">Add one new section to the creator's campaign brief, between Campaign Brief and Brand Guidelines: a row of tiles you swipe through, one per product, each showing that product's hook ideas and instructions.</p>
+
+  <h2>What it looks like</h2>
+  <figure>
+    <img src="assets/handoff-tile-states.png" width="806" height="547" alt="The new tile between Campaign Brief and Brand Guidelines: three lines per list on the left, after Show more on the right">
+    <figcaption>Left: the tile as it loads, three lines per list. Right: the same tile after Show more.</figcaption>
+  </figure>
+  <p>Try it in the <a href="creator-brief.html?handoff=1#hooks">live prototype</a>. At phone width it behaves like the app, so open it on your phone and swipe.</p>
+  <p>The rest of the brief is the current flow in Figma (<a href="https://www.figma.com/design/8rB3KQsQhmJrnQk3EFkcDx/Design-Labs?node-id=9160-50962">Design Labs frame</a>). The new tile has no Figma frame, so the prototype is the reference.</p>
+
+  <h2>Questions and answers</h2>
+  <table>
+    <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+    <tbody>
+      <tr><td>Where does it go?</td><td>In the campaign brief, between Campaign Brief and Brand Guidelines. Product campaigns only.</td></tr>
+      <tr><td>What is on a tile?</td><td>The product's photo and name, then two bullet lists: HOOK IDEAS and INSTRUCTIONS. The tile has no title.</td></tr>
+      <tr><td>How many tiles?</td><td>One per product that has hook ideas or instructions. Creators see every product's tile, not only the product they picked.</td></tr>
+      <tr><td>How does it swipe?</td><td>The whole tile swipes left and right and snaps into place. The next tile shows 28pt at the edge of the screen. Dots under the tile show which product you are on, and tapping a dot jumps there.</td></tr>
+      <tr><td>How long can a list get?</td><td>Each list shows 3 bullets. If anything is cut, one "Show more" link at the bottom of the tile opens both lists and turns into "Show less".</td></tr>
+      <tr><td>Does an open tile stay open?</td><td>No. It goes back to 3 bullets once you swipe to another product.</td></tr>
+      <tr><td>What if there is only one product?</td><td>One tile at the full width of the other cards. No dots and nothing to swipe.</td></tr>
+      <tr><td>What if a list is empty?</td><td>Hide that list and its label. A product with neither list gets no tile. If no product has any, the section does not show at all.</td></tr>
+      <tr><td>What order are the tiles in?</td><td>The order the API returns them.</td></tr>
+      <tr><td>Where does the content come from?</td><td>The brand writes it in the Brand Portal brief (<a href="nf/brief?hooks=demo">prototype</a>). That side is a prototype today, so the API does not return it yet. Per product the tile needs: name, photo, hook ideas, instructions.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Sizes and styles</h2>
+  <p>All values are in points and come from the prototype, which follows the Figma brief.</p>
+  <table>
+    <thead><tr><th>Part</th><th>Spec</th></tr></thead>
+    <tbody>
+      <tr><td>Tile</td><td>Same card as the rest of the brief: white, radius 16, 0.5 border #E3E3E3, shadow 0 4 32 at 4% black. 24 narrower than the other cards. Padding 16 top and left, 14 right, 18 bottom.</td></tr>
+      <tr><td>Row of tiles</td><td>12 between tiles. The first tile lines up with the left edge of the other cards, the last with their right edge, middle ones sit centred.</td></tr>
+      <tr><td>Product</td><td>Photo 44 x 44, radius 10, then 12, then the name in Inter Medium 16/20, #1C1C1C.</td></tr>
+      <tr><td>Lists</td><td>14 under the product. Label in Inter Medium 12/16, #717171, caps. Bullets in Inter Regular 14, #696969. 8 between label and bullets, 12 between the two lists. Same styles as the Campaign Brief card.</td></tr>
+      <tr><td>Show more</td><td>Inter SemiBold 13/20, #7A5CFA, left aligned, 8 under the lists.</td></tr>
+      <tr><td>Dots</td><td>6 x 6 circles, 18 apart, 8 under the tile. #CDCDD2, and #1C1C1C for the current one.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Not in this build</h2>
+  <ul>
+    <li>A stacked-deck swipe style. Side by side, as in the prototype, is the one to build.</li>
+    <li>Opening on the creator's own product once they have picked one.</li>
+    <li>The Brand Portal side, where brands write the hook ideas and instructions. That is a separate handoff.</li>
+  </ul>
+</main>
+</body>
+</html>
