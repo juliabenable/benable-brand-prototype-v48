@@ -49,7 +49,10 @@ export const COPY = {
   // wrong (Julia, Nov 13: creators see all of this in their brief)
   product: 'Product',
   lists: {
-    hooks: { label: 'Hooks', add: '+ Add a hook', placeholder: 'Add a hook' },
+    // "Hook Ideas", not "Hooks": AGREED (Julia, Nov 13). She renamed the creator's label to HOOK IDEAS, then
+    // said "Yes, rename it" to matching it here, the way production pairs Content Ideas with CONTENT IDEAS.
+    // The add link and the placeholder keep "a hook" (production's "+ Add an idea" does not repeat its label either).
+    hooks: { label: 'Hook Ideas', add: '+ Add a hook', placeholder: 'Add a hook' },
     instructions: { label: 'Instructions', add: '+ Add an instruction', placeholder: 'Add an instruction' },
   },
   addProduct: 'Add another product',

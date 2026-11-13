@@ -31,7 +31,7 @@ This REPLACES the creator-count variants below as the default. Visual model: the
   right after the What Creators Will Do card. That card is untouched: production's captured card and editor.
 - Nothing added: one dashed row, "Add specific hooks or instructions per product" (AGREED, her wording).
 - After the click: a card "Hooks & Instructions by Product" with one tab per product (thumbnail + product name),
-  a + after the last tab, and one panel. Read mode = production bullets under Hooks / Instructions. Edit = a
+  a + after the last tab, and one panel. Read mode = production bullets under Hook Ideas / Instructions. Edit = a
   Product dropdown (products read from What Creators Receive) + production's own list-editor rows (cloned from
   capture 28) + "+ Add a hook" / "+ Add an instruction". Enter adds a line, Backspace on an empty line removes it.
 - One tab per product: the + leaves when every product has a tab, and the dropdown only offers products without one.
@@ -48,8 +48,11 @@ This REPLACES the creator-count variants below as the default. Visual model: the
     at `.nf .nfp .x` (0,3,0) and state rules at (0,4,0). Keyboard focus keeps a quiet cue (`[data-nfp-kbd]`).
   - "Creators only see these for the product they get. That's not true as they see this in their brief" → that
     line is gone and nothing may claim it: creators see every product's hooks.
-- Copy: `COPY` at the top of productHooks.js. Copywriter pass queued as q-20261113-202116-01 to -09; only the
-  entry row is AGREED, the rest PROPOSED (title with "&" like "Usage & Permissions").
+- Copy: `COPY` at the top of productHooks.js. Copywriter pass queued as q-20261113-202116-01 to -09. AGREED: the
+  entry row (her wording) and the list label "Hook Ideas" (Julia, Nov 13: she renamed the creator's label to HOOK
+  IDEAS, then answered "Yes, rename it" to matching it here; production pairs Content Ideas with CONTENT IDEAS the
+  same way). The rest is PROPOSED: the title "Hooks & Instructions by Product" ("&" like "Usage & Permissions"),
+  "Instructions", "+ Add a hook", the "Add a hook" placeholder and the x tooltip all still say "hook(s)".
 - OPEN (not built): a campaign with ONE product (hide the row?), what a creator sees per product when they get
   several, and nothing downstream reads the hooks yet (matching, launch, tracker).
 - Fork `variants`: `product` (default, on the bar as "By product") | `creators` (drawer only, the first version
@@ -93,8 +96,8 @@ ideal is that they would be able to swipe right/left for each varient" + Figma D
   subtext as Hook idea". So the creator tile has NO title (it opens on the product's photo and name) and the first
   list is HOOK IDEAS (plural + caps like CONTENT IDEAS). That answers the copywriter's open ask (creator lane,
   queue q-20261113-204313-01 to -04): hooks are ideas, not a must. INSTRUCTIONS unchanged, still PROPOSED.
-  NOT changed, nobody asked: the Brand Portal card still says "Hooks & Instructions by Product" and labels the list
-  "Hooks" (production pairs "Content Ideas" with the creator's CONTENT IDEAS, so "Hook Ideas" would be the match).
+  The Brand Portal list label followed the same evening ("Hook Ideas", see the brand section); its card title
+  still says "Hooks & Instructions by Product", nobody asked to change that.
 - Verified Nov 13 in headless Chromium: dot tap settles in about 350ms, a swipe released part-way snaps to the
   nearest page, 37 images and none broken. Proof shots in `creator-brief/shots/`.
 
