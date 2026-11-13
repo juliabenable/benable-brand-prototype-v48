@@ -25,12 +25,15 @@
   OPEN ASK for Julia: are hooks a must, or ideas? The card above labels optional
   lists IDEAS and SUGGESTIONS; if hooks are ideas the label becomes HOOK IDEAS.
 
-  NEW. One card, #hooks, between Campaign Brief and Brand Guidelines: one product
-  per page, swipe left / right (Julia, Nov 13: "ideal is that they would be able
-  to swipe right/left for each variant"). Pages are the brief's own inner-card
-  grammar (the What you get product card), the next page peeks in from the edge,
-  dots show position and jump on tap. Creators see every product's hooks, not only
-  their own (Julia, Nov 13: "they see this in their brief").
+  NEW. One section, #hooks, between Campaign Brief and Brand Guidelines: one product
+  per tile, swipe left / right (Julia, Nov 13: "ideal is that they would be able
+  to swipe right/left for each variant"). Round 2, same evening: "could you makke
+  the whole tile swippable? Instead of the tile in the tile". So each product is a
+  full brief tile (the same card as its neighbours, header and all) and the tile
+  itself moves; the first version had small cards inside one card. The next tile
+  peeks in at the screen edge, dots under the tile show position and jump on tap.
+  Creators see every product's hooks, not only their own (Julia, Nov 13: "they see
+  this in their brief").
 
   BUILD. python3 ../build.py inlines the assets and the Inter font and writes
   ../../public/creator-brief.html (self-contained). Edit THIS file, never the output.
@@ -65,7 +68,7 @@ button { font:inherit; color:inherit; }
 .screen { position:absolute; inset:44px 0 0 0; display:flex; flex-direction:column; background:#f7f7f8; }
 .nav { flex:none; height:48px; display:flex; align-items:center; padding:0 10px; }
 .nav button { width:36px; height:36px; display:grid; place-items:center; border:0; border-radius:50%; background:none; cursor:pointer; }
-.scroll { position:relative; flex:1; overflow-y:auto; overscroll-behavior:contain; display:flex; flex-direction:column; align-items:center; gap:16px; padding:4px 0 56px; scrollbar-width:none; }
+.scroll { container-type:inline-size; position:relative; flex:1; overflow-y:auto; overscroll-behavior:contain; display:flex; flex-direction:column; align-items:center; gap:16px; padding:4px 0 56px; scrollbar-width:none; }
 .scroll::-webkit-scrollbar { display:none; }
 .homebar { position:absolute; left:50%; bottom:8px; width:134px; height:5px; margin-left:-67px; border-radius:3px; background:#17171a; pointer-events:none; }
 
@@ -161,27 +164,34 @@ button { font:inherit; color:inherit; }
 .usage { padding:16px 14px 20px 16px; }
 .usage .dots { margin-top:17px; }
 
-/* ---------- NEW: hooks and instructions by product ---------- */
-.hk { padding:16px 0 14px; overflow:hidden; }
-.hk .card-h { padding:0 16px; }
-.hk-track { position:relative; display:flex; align-items:stretch; gap:8px; margin-top:17px; padding:0 16px 10px;
-  overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x mandatory; scroll-padding:0 16px;
+/* ---------- NEW: hooks and instructions by product ----------
+   Each product is a WHOLE brief tile and the tile itself swipes (Julia, Nov 13:
+   "could you makke the whole tile swippable? Instead of the tile in the tile").
+   No card inside a card: the row of tiles runs edge to edge across the screen,
+   so the next product's tile peeks in at the screen edge. A tile is 24px
+   narrower than its neighbours in the brief; that is what leaves room for the peek. */
+.hk { flex:none; align-self:stretch; margin-bottom:-4px;
+  --card:min(343px, 100cqw - 32px); --side:calc((100cqw - var(--card)) / 2); }
+.hk-row { position:relative; display:flex; align-items:stretch; gap:12px;
+  padding:4px var(--side) 16px; margin:-4px 0 -16px;   /* the padding keeps the tiles' soft shadow from being cut */
+  overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x mandatory; scroll-padding:0 var(--side);
   -webkit-overflow-scrolling:touch; scrollbar-width:none; outline:none; cursor:grab; }
-.hk-track::-webkit-scrollbar { display:none; }
-.hk-track.drag { cursor:grabbing; scroll-snap-type:none; user-select:none; }
-/* a page is the brief's own inner card (the What you get product card), 20px narrower
-   than the row so the next one peeks in */
-.hk-page { flex:0 0 calc(100% - 20px); scroll-snap-align:center; display:flex; flex-direction:column; gap:12px; padding:12px;
-  background:#fff; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,.04), inset 0 0 0 1px var(--line); }
-.hk-page:first-child { scroll-snap-align:start; }
-.hk-page:last-child { scroll-snap-align:end; }
-.hk-prod { display:flex; align-items:center; gap:12px; }
+.hk-row::-webkit-scrollbar { display:none; }
+.hk-row.drag { cursor:grabbing; scroll-snap-type:none; user-select:none; }
+.hk-tile { flex:0 0 calc(var(--card) - 24px); width:auto; max-width:none; scroll-snap-align:center;
+  padding:16px 14px 18px 16px; display:flex; flex-direction:column; }
+.hk-tile:first-child { scroll-snap-align:start; }
+.hk-tile:last-child { scroll-snap-align:end; }
+.hk-tile:only-child { flex-basis:var(--card); }   /* one product: a plain full-width tile, nothing to swipe */
+.hk-prod { margin-top:17px; display:flex; align-items:center; gap:12px; }
 .hk-prod .thumb { flex:none; width:44px; height:44px; border-radius:10px; overflow:hidden; background:#a7dda6; }
 .hk-prod .thumb img { width:100%; height:100%; object-fit:cover; -webkit-user-drag:none; }
 .hk-prod b { font-size:16px; line-height:20px; font-weight:500; color:var(--ink); }
-.hk-dots { display:flex; justify-content:center; gap:6px; margin-top:2px; }
-.hk-dots button { width:18px; height:18px; display:grid; place-items:center; border:0; background:none; padding:0; cursor:pointer; }
-.hk-dots button::before { content:""; width:6px; height:6px; border-radius:50%; background:#d9d9d9; transition:background .15s; }
+.hk-tile .groups { margin-top:14px; display:flex; flex-direction:column; gap:12px; }
+/* the dots sit on the page, between this tile and the next card */
+.hk-dots { display:flex; justify-content:center; gap:4px; margin-top:8px; }
+.hk-dots button { width:14px; height:14px; display:grid; place-items:center; border:0; background:none; padding:0; cursor:pointer; }
+.hk-dots button::before { content:""; width:6px; height:6px; border-radius:50%; background:#cdcdd2; transition:background .15s; }
 .hk-dots button.on::before { background:var(--ink); }
 
 /* on a real phone the page IS the app: no rail, no frame */
@@ -205,9 +215,9 @@ button { font:inherit; color:inherit; }
     <p>The brief is the current creator mobile flow from Figma. <b>One card is new</b>: it sits between Campaign Brief and Brand Guidelines.</p>
     <button class="jump" id="jump" type="button">Jump to the new card</button>
     <ul>
-      <li><b>One product per page.</b> Swipe or drag sideways. The next product peeks in from the edge.</li>
-      <li><b>Dots</b> show where you are and jump when tapped. Arrow keys work too.</li>
-      <li>A page is the same inner card as a product in What you get, so nothing new has to be learned.</li>
+      <li><b>One product per tile, and the whole tile swipes.</b> No card inside a card. Swipe or drag it sideways.</li>
+      <li>The next product's tile peeks in at the edge of the screen.</li>
+      <li><b>Dots</b> under the tile show where you are and jump when tapped. Arrow keys work too.</li>
       <li>Creators see every product's hooks and instructions, not only their own.</li>
     </ul>
     <p>Changed from Figma: its two products are both named Big Dulce. Here they carry the names on the packs, so the pages can be told apart.</p>
@@ -288,22 +298,27 @@ button { font:inherit; color:inherit; }
         </section>
 
         <!-- ================= NEW ================= -->
-        <section class="card hk" id="hooks" aria-labelledby="hk-title">
-          <div class="card-h"><span class="ic"><img src="assets/ic-brief.svg" alt=""></span><h2 id="hk-title">Hooks and Instructions by Product</h2></div>
-          <div class="hk-track" id="hk-track" tabindex="0" role="group" aria-roledescription="carousel" aria-label="Hooks and instructions, one product per page">
-            <article class="hk-page" aria-label="Product 1 of 2">
+        <section class="hk" id="hooks" aria-label="Hooks and instructions, one product per page">
+          <div class="hk-row" id="hk-track" tabindex="0" role="group" aria-roledescription="carousel" aria-label="Hooks and instructions, one product per page">
+            <article class="card hk-tile" aria-label="Product 1 of 2">
+              <div class="card-h"><span class="ic"><img src="assets/ic-brief.svg" alt=""></span><h2>Hooks and Instructions by Product</h2></div>
               <div class="hk-prod"><span class="thumb"><img src="assets/product-1.jpg" alt=""></span><b>Cocoa Bone Broth Tin</b></div>
-              <div class="grp"><span class="lbl">HOOKS</span>
-                <ul class="dots"><li>Start with the sound of the lid coming off</li><li>"I swapped my afternoon coffee for this"</li></ul></div>
-              <div class="grp"><span class="lbl">INSTRUCTIONS</span>
-                <ul class="dots"><li>Show one scoop going into the mug</li><li>Keep the tin in frame while you stir</li><li>Say it has 10g of protein per serving</li></ul></div>
+              <div class="groups">
+                <div class="grp"><span class="lbl">HOOKS</span>
+                  <ul class="dots"><li>Start with the sound of the lid coming off</li><li>"I swapped my afternoon coffee for this"</li></ul></div>
+                <div class="grp"><span class="lbl">INSTRUCTIONS</span>
+                  <ul class="dots"><li>Show one scoop going into the mug</li><li>Keep the tin in frame while you stir</li><li>Say it has 10g of protein per serving</li></ul></div>
+              </div>
             </article>
-            <article class="hk-page" aria-label="Product 2 of 2">
+            <article class="card hk-tile" aria-label="Product 2 of 2">
+              <div class="card-h"><span class="ic"><img src="assets/ic-brief.svg" alt=""></span><h2>Hooks and Instructions by Product</h2></div>
               <div class="hk-prod"><span class="thumb"><img src="assets/product-2.jpg" alt="" style="object-position:50% 38%"></span><b>Cocoa Bone Broth Sachets</b></div>
-              <div class="grp"><span class="lbl">HOOKS</span>
-                <ul class="dots"><li>Pull a sachet out of your bag mid-errand</li><li>"Bone broth that fits in a jacket pocket"</li></ul></div>
-              <div class="grp"><span class="lbl">INSTRUCTIONS</span>
-                <ul class="dots"><li>Film it away from your kitchen: desk, gym or car</li><li>Show the sachet tearing open</li></ul></div>
+              <div class="groups">
+                <div class="grp"><span class="lbl">HOOKS</span>
+                  <ul class="dots"><li>Pull a sachet out of your bag mid-errand</li><li>"Bone broth that fits in a jacket pocket"</li></ul></div>
+                <div class="grp"><span class="lbl">INSTRUCTIONS</span>
+                  <ul class="dots"><li>Film it away from your kitchen: desk, gym or car</li><li>Show the sachet tearing open</li></ul></div>
+              </div>
             </article>
           </div>
           <div class="hk-dots" id="hk-dots"></div>
@@ -361,7 +376,7 @@ button { font:inherit; color:inherit; }
 (() => {
   const track = document.getElementById('hk-track');
   const dotsEl = document.getElementById('hk-dots');
-  const pages = [...track.querySelectorAll('.hk-page')];
+  const pages = [...track.querySelectorAll('.hk-tile')];
   const n = pages.length;
 
   // where a page rests: first hugs the left, last hugs the right, the rest sit centred
