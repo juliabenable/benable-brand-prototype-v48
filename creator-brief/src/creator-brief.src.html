@@ -192,6 +192,11 @@ button { font:inherit; color:inherit; }
 .hk-prod .thumb img { width:100%; height:100%; object-fit:cover; -webkit-user-drag:none; }
 .hk-prod b { font-size:16px; line-height:20px; font-weight:500; color:var(--ink); }
 .hk-tile .groups { margin-top:14px; display:flex; flex-direction:column; gap:12px; }
+/* only N lines per list, then "Show more" (Julia, Nov 13: "make sure you only show x lines, and after
+   it shows a "show more""). N is LINES in the script (3; try ?lines=2). One link per tile opens both lists. */
+.hk-tile:not(.open) .dots li.extra { display:none; }
+.hk-more { align-self:flex-start; margin:8px 0 -8px; padding:6px 0; border:0; background:none;
+  font-size:13px; line-height:20px; font-weight:600; color:var(--accent); cursor:pointer; -webkit-tap-highlight-color:transparent; }
 /* the dots sit on the page, between this tile and the next card */
 .hk-dots { display:flex; justify-content:center; gap:4px; margin-top:8px; }
 .hk-dots button { width:14px; height:14px; display:grid; place-items:center; border:0; background:none; padding:0; cursor:pointer; }
@@ -244,6 +249,7 @@ button { font:inherit; color:inherit; }
       <li><b>One product per tile, and the whole tile swipes.</b> No card inside a card. Swipe or drag it sideways.</li>
       <li><b>Side by side:</b> the next product's tile peeks in at the edge of the screen.</li>
       <li><b>Stacked deck:</b> the other products sit behind the tile with their top edges showing. Pull left for the next product, right for the one before.</li>
+      <li><b>Three lines per list,</b> then Show more. The link opens both lists on that tile, and the tile closes again when you leave it. Add <b>?lines=2</b> to the link to try another number.</li>
       <li><b>Dots</b> under the tile show where you are and jump when tapped. Arrow keys work too.</li>
       <li>Creators see every product's hooks and instructions, not only their own.</li>
     </ul>
@@ -331,9 +337,9 @@ button { font:inherit; color:inherit; }
               <div class="hk-prod"><span class="thumb"><img src="assets/product-1.jpg" alt=""></span><b>Cocoa Bone Broth Tin</b></div>
               <div class="groups">
                 <div class="grp"><span class="lbl">HOOK IDEAS</span>
-                  <ul class="dots"><li>Start with the sound of the lid coming off</li><li>"I swapped my afternoon coffee for this"</li></ul></div>
+                  <ul class="dots"><li>Start with the sound of the lid coming off</li><li>"I swapped my afternoon coffee for this"</li><li>Pour it over ice and ask who guessed it was bone broth</li><li>Stir it with the camera at mug level</li><li>"Hot chocolate, but with 10g of protein"</li></ul></div>
                 <div class="grp"><span class="lbl">INSTRUCTIONS</span>
-                  <ul class="dots"><li>Show one scoop going into the mug</li><li>Keep the tin in frame while you stir</li><li>Say it has 10g of protein per serving</li></ul></div>
+                  <ul class="dots"><li>Show one scoop going into the mug</li><li>Keep the tin in frame while you stir</li><li>Say it has 10g of protein per serving</li><li>Film in daylight so the cocoa color shows</li></ul></div>
               </div>
             </article>
             <article class="card hk-tile" aria-label="Product 2 of 2">
@@ -420,7 +426,47 @@ button { font:inherit; color:inherit; }
     return b;
   });
   if (n < 2) dotsEl.hidden = true;
-  const paint = (c) => dots.forEach((d, i) => { d.classList.toggle('on', i === c); d.setAttribute('aria-current', i === c ? 'true' : 'false'); });
+
+  /* ---------- only N lines per list, then "Show more" (shared) ----------
+     Julia, Nov 13: "make sure you only show x lines, and after it shows a "show more"".
+     She left the number open: 3 here, ?lines=N tries another. A line = one bullet.
+     One link per tile opens both of its lists; a tile closes again once you leave it. */
+  const LINES = (() => {
+    const v = parseInt(new URLSearchParams(window.location.search).get('lines'), 10);
+    return v >= 1 && v <= 12 ? v : 3;
+  })();
+  const setOpen = (tile, open) => {
+    tile.classList.toggle('open', open);
+    const b = tile.querySelector('.hk-more');
+    if (b) { b.textContent = open ? 'Show less' : 'Show more'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+  };
+  tiles.forEach((tile) => {
+    let extra = 0;
+    tile.querySelectorAll('ul.dots').forEach((ul) => [...ul.children].forEach((li, i) => { if (i >= LINES) { li.classList.add('extra'); extra++; } }));
+    if (!extra) return;                       // nothing is cut on this tile: no link
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'hk-more';
+    b.addEventListener('click', () => setOpen(tile, !tile.classList.contains('open')));
+    tile.appendChild(b);
+    setOpen(tile, false);
+  });
+
+  let shown = 0;
+  let closing = 0;
+  const paint = (c) => {
+    dots.forEach((d, i) => { d.classList.toggle('on', i === c); d.setAttribute('aria-current', i === c ? 'true' : 'false'); });
+    if (c === shown) return;
+    shown = c;
+    // close the tiles you left, once the swipe has settled (closing mid-swipe would make the page jump)
+    clearTimeout(closing);
+    closing = setTimeout(() => tiles.forEach((t, i) => { if (i !== shown && t.classList.contains('open')) setOpen(t, false); }), 220);
+  };
+
+  // after a real drag, the click that follows must not land on a link
+  let eat = false;
+  row.addEventListener('click', (e) => { if (eat) { eat = false; e.stopPropagation(); e.preventDefault(); } }, true);
+  const eatNextClick = () => { eat = true; setTimeout(() => { eat = false; }, 0); };
 
   /* ---------- style A: side by side. Native scrolling + scroll snap do the work. ---------- */
   const side = (() => {
@@ -465,26 +511,32 @@ button { font:inherit; color:inherit; }
     let drag = null;
     row.addEventListener('pointerdown', (e) => {
       if (style !== 'row' || e.pointerType !== 'mouse' || e.button !== 0) return;
-      drag = { x: e.clientX, left: row.scrollLeft, from: current(), moved: 0 };
-      row.setPointerCapture(e.pointerId);
+      drag = { id: e.pointerId, x: e.clientX, left: row.scrollLeft, from: current(), moved: 0, live: false };
     });
     row.addEventListener('pointermove', (e) => {
-      if (!drag) return;
+      if (!drag || e.pointerId !== drag.id) return;
       const dx = e.clientX - drag.x;
+      if (!drag.live) {
+        if (Math.abs(dx) < 4) return;          // a plain click stays a click (the Show more link)
+        drag.live = true;
+        try { row.setPointerCapture(drag.id); } catch (err) { /* already released */ }
+        row.classList.add('drag');
+      }
       drag.moved = dx;
-      if (Math.abs(dx) > 3) row.classList.add('drag');
       row.scrollLeft = drag.left - dx;
     });
-    const drop = () => {
-      if (!drag) return;
-      const { moved, from } = drag;
+    const drop = (e) => {
+      if (!drag || (e && e.pointerId !== drag.id)) return;
+      const { moved, from, live } = drag;
       drag = null;
+      if (!live) return;
+      eatNextClick();
       // snapping is off while dragging: settle by hand, a 40px pull is a page turn
       const to = Math.abs(moved) > 40 ? from + (moved < 0 ? 1 : -1) : from;
       glide(restOf(clamp(to)), () => row.classList.remove('drag'));
     };
-    row.addEventListener('pointerup', drop);
-    row.addEventListener('pointercancel', drop);
+    window.addEventListener('pointerup', drop);
+    window.addEventListener('pointercancel', drop);
 
     return {
       on() { row.scrollLeft = 0; paint(0); },
@@ -568,6 +620,7 @@ button { font:inherit; color:inherit; }
       drag = null;
       row.classList.remove('drag');
       if (d.axis !== 'x') return;
+      eatNextClick();
       const speed = Math.abs(d.dx) / Math.max(1, performance.now() - d.t);
       if (Math.abs(d.dx) > 80 || (speed > 0.5 && Math.abs(d.dx) > 24)) {
         const dir = d.dx < 0 ? 1 : -1;

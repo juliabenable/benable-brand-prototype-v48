@@ -90,6 +90,12 @@ ideal is that they would be able to swipe right/left for each varient" + Figma D
     Up / down still scrolls the page (`touch-action: pan-y`). Dots and arrow keys work the same.
   - One script, two small controllers (`side`, `deck`) that share the dots; `setStyle()` cleans up after the
     other one. The script lives in the src html; edit it there.
+- LINE CAP (Julia, Nov 13: "make sure you only show x lines, and after it shows a "show more""): each list on a
+  tile shows `LINES` bullets (3; she left the number open, `?lines=N` tries another), the rest carry `li.extra`
+  and hide until the tile is `.open`. ONE "Show more" link per tile opens both of its lists ("Show less" closes;
+  that wording is mine, PROPOSED); a tile with nothing cut has no link. A tile closes again 220ms after you leave
+  it (closing mid-swipe made the page jump). A line = one bullet, not a line of wrapped text: OPEN if she meant
+  text lines. The mouse drag only captures the pointer after 4px, so a click on the link stays a click.
 - Deviations from the Figma frame, on purpose: both products are named "Big Dulce" there (placeholder), here they
   carry the pack names so the pages can be told apart; the affiliate confetti banner is a 1x render, not a rebuild.
 - Copy, JULIA'S RULING (Nov 13, after seeing the tiles): "remove the title "Hooks"" and "rename the "Hook"
