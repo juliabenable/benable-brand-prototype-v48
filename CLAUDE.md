@@ -67,9 +67,9 @@ ideal is that they would be able to swipe right/left for each varient" + Figma D
   Guidelines. Desktop shows a 375x812 phone plus a rail; under 520px wide the page IS the app, so it can be opened
   on a real phone.
 - The new section (round 2, Julia Nov 13: "could you makke the whole tile swippable? Instead of the tile in the
-  tile"): each product is a WHOLE brief tile (the same card as its neighbours: header "Hooks and Instructions by
-  Product", then 44px photo + name, then HOOKS and INSTRUCTIONS in the Campaign Brief label / bullet styles) and
-  the tile itself swipes. No card inside a card. `.hk-row` is a horizontal scroll-snap row that runs edge to edge
+  tile"): each product is a WHOLE brief tile (the same card as its neighbours: 44px photo + name, then HOOK IDEAS
+  and INSTRUCTIONS in the Campaign Brief label / bullet styles; NO title, see the copy line below) and the tile
+  itself swipes. No card inside a card. `.hk-row` is a horizontal scroll-snap row that runs edge to edge
   across the screen (`container-type: inline-size` on `.scroll` gives it `100cqw`); a tile is 24px narrower than
   its neighbours, so the next product's tile peeks 28px at the screen edge. First tile rests left (aligned with
   the brief's cards), last rests right, middle ones centred. Dots sit on the page under the tile and jump on tap;
@@ -89,9 +89,12 @@ ideal is that they would be able to swipe right/left for each varient" + Figma D
     other one. The script lives in the src html; edit it there.
 - Deviations from the Figma frame, on purpose: both products are named "Big Dulce" there (placeholder), here they
   carry the pack names so the pages can be told apart; the affiliate confetti banner is a 1x render, not a rebuild.
-- Copy (copywriter, creator lane, queued q-20261113-204313-01 to -04, all PROPOSED): the card title is "Hooks and
-  Instructions by Product" with "and" (this brief says "Usage and Rights"; the Brand Portal card keeps "&"),
-  labels HOOKS / INSTRUCTIONS. OPEN ASK for Julia: are hooks a must or ideas? If ideas, the label becomes HOOK IDEAS.
+- Copy, JULIA'S RULING (Nov 13, after seeing the tiles): "remove the title "Hooks"" and "rename the "Hook"
+  subtext as Hook idea". So the creator tile has NO title (it opens on the product's photo and name) and the first
+  list is HOOK IDEAS (plural + caps like CONTENT IDEAS). That answers the copywriter's open ask (creator lane,
+  queue q-20261113-204313-01 to -04): hooks are ideas, not a must. INSTRUCTIONS unchanged, still PROPOSED.
+  NOT changed, nobody asked: the Brand Portal card still says "Hooks & Instructions by Product" and labels the list
+  "Hooks" (production pairs "Content Ideas" with the creator's CONTENT IDEAS, so "Hook Ideas" would be the match).
 - Verified Nov 13 in headless Chromium: dot tap settles in about 350ms, a swipe released part-way snaps to the
   nearest page, 37 images and none broken. Proof shots in `creator-brief/shots/`.
 

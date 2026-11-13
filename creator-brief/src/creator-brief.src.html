@@ -19,18 +19,18 @@
   - the affiliate banner (about 150 confetti vectors) is a 1x render of the Figma
     frame, not a rebuild.
 
-  COPY of the new card (copywriter, creator lane, Nov 13, queued q-20261113-204313-01
-  to -04, all PROPOSED): the title says "and", not "&", because this brief's own
-  titles do ("Usage and Rights"); the Brand Portal card says "&" like its neighbours.
-  OPEN ASK for Julia: are hooks a must, or ideas? The card above labels optional
-  lists IDEAS and SUGGESTIONS; if hooks are ideas the label becomes HOOK IDEAS.
+  COPY of the new tile. Julia, Nov 13, after seeing it: "remove the title "Hooks"" and
+  "rename the "Hook" subtext as Hook idea". So the tile has NO title (it opens on the
+  product's photo and name) and the first list is labelled HOOK IDEAS (plural and in
+  caps like its neighbours CONTENT IDEAS / TALKING POINT SUGGESTIONS). That also
+  answers the copywriter's open ask (creator lane, queue q-20261113-204313-01 to
+  -04): hooks are ideas, not a must. INSTRUCTIONS is unchanged and still PROPOSED.
 
   NEW. One section, #hooks, between Campaign Brief and Brand Guidelines: one product
   per tile, swipe left / right (Julia, Nov 13: "ideal is that they would be able
   to swipe right/left for each variant"). Round 2, same evening: "could you makke
   the whole tile swippable? Instead of the tile in the tile". So each product is a
-  full brief tile (the same card as its neighbours, header and all) and the tile
-  itself moves; the first version had small cards inside one card. The next tile
+  full brief tile (the same card as its neighbours) and the tile itself moves; the first version had small cards inside one card. The next tile
   peeks in at the screen edge, dots under the tile show position and jump on tap.
   Creators see every product's hooks, not only their own (Julia, Nov 13: "they see
   this in their brief").
@@ -187,7 +187,7 @@ button { font:inherit; color:inherit; }
 .hk-tile:first-child { scroll-snap-align:start; }
 .hk-tile:last-child { scroll-snap-align:end; }
 .hk-tile:only-child { flex-basis:var(--card); }   /* one product: a plain full-width tile, nothing to swipe */
-.hk-prod { margin-top:17px; display:flex; align-items:center; gap:12px; }
+.hk-prod { display:flex; align-items:center; gap:12px; }
 .hk-prod .thumb { flex:none; width:44px; height:44px; border-radius:10px; overflow:hidden; background:#a7dda6; }
 .hk-prod .thumb img { width:100%; height:100%; object-fit:cover; -webkit-user-drag:none; }
 .hk-prod b { font-size:16px; line-height:20px; font-weight:500; color:var(--ink); }
@@ -325,23 +325,21 @@ button { font:inherit; color:inherit; }
         </section>
 
         <!-- ================= NEW ================= -->
-        <section class="hk" id="hooks" aria-label="Hooks and instructions, one product per page">
-          <div class="hk-row" id="hk-track" tabindex="0" role="group" aria-roledescription="carousel" aria-label="Hooks and instructions, one product per page">
+        <section class="hk" id="hooks" aria-label="Hook ideas and instructions, one product per page">
+          <div class="hk-row" id="hk-track" tabindex="0" role="group" aria-roledescription="carousel" aria-label="Hook ideas and instructions, one product per page">
             <article class="card hk-tile" aria-label="Product 1 of 2">
-              <div class="card-h"><span class="ic"><img src="assets/ic-brief.svg" alt=""></span><h2>Hooks and Instructions by Product</h2></div>
               <div class="hk-prod"><span class="thumb"><img src="assets/product-1.jpg" alt=""></span><b>Cocoa Bone Broth Tin</b></div>
               <div class="groups">
-                <div class="grp"><span class="lbl">HOOKS</span>
+                <div class="grp"><span class="lbl">HOOK IDEAS</span>
                   <ul class="dots"><li>Start with the sound of the lid coming off</li><li>"I swapped my afternoon coffee for this"</li></ul></div>
                 <div class="grp"><span class="lbl">INSTRUCTIONS</span>
                   <ul class="dots"><li>Show one scoop going into the mug</li><li>Keep the tin in frame while you stir</li><li>Say it has 10g of protein per serving</li></ul></div>
               </div>
             </article>
             <article class="card hk-tile" aria-label="Product 2 of 2">
-              <div class="card-h"><span class="ic"><img src="assets/ic-brief.svg" alt=""></span><h2>Hooks and Instructions by Product</h2></div>
               <div class="hk-prod"><span class="thumb"><img src="assets/product-2.jpg" alt="" style="object-position:50% 38%"></span><b>Cocoa Bone Broth Sachets</b></div>
               <div class="groups">
-                <div class="grp"><span class="lbl">HOOKS</span>
+                <div class="grp"><span class="lbl">HOOK IDEAS</span>
                   <ul class="dots"><li>Pull a sachet out of your bag mid-errand</li><li>"Bone broth that fits in a jacket pocket"</li></ul></div>
                 <div class="grp"><span class="lbl">INSTRUCTIONS</span>
                   <ul class="dots"><li>Film it away from your kitchen: desk, gym or car</li><li>Show the sachet tearing open</li></ul></div>
