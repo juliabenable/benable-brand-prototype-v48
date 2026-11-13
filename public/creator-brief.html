@@ -58,6 +58,10 @@ button { font:inherit; color:inherit; }
 .rail .jump { display:inline-flex; align-items:center; height:36px; padding:0 14px; margin:2px 0 18px; border:0; border-radius:10px; background:var(--accent); color:#fff; font-size:13px; font-weight:600; cursor:pointer; }
 .rail .jump:hover { background:#6a4ce8; }
 .rail .tag { display:inline-block; font-size:11px; font-weight:600; letter-spacing:.04em; color:#8a6a1c; background:#fff5db; border-radius:6px; padding:2px 7px; margin-bottom:10px; }
+.rail .seg { display:inline-flex; gap:2px; padding:3px; margin:0 0 16px; border-radius:11px; background:#e4e4ea; }
+.rail .seg button { height:30px; padding:0 12px; border:0; border-radius:8px; background:none; font-size:13px; font-weight:600; color:var(--med); cursor:pointer; }
+.rail .seg button.on { background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.12); }
+.rail .lead { font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:#9a9aa3; margin:0 0 6px; }
 .rail ul { margin:0 0 14px 18px; font-size:13px; line-height:20px; color:var(--med); }
 .rail li { margin-bottom:6px; }
 
@@ -194,6 +198,23 @@ button { font:inherit; color:inherit; }
 .hk-dots button::before { content:""; width:6px; height:6px; border-radius:50%; background:#cdcdd2; transition:background .15s; }
 .hk-dots button.on::before { background:var(--ink); }
 
+/* ---------- style B (?swipe=deck): a stacked deck ----------
+   The pattern from the favorite-things deck Julia liked ("this card thing UI with the
+   perspective of other card"): the open tile on top at full width, the other products
+   behind it, each a step narrower and a step higher, only their top edges showing.
+   Pull the top tile left for the next product, right for the one before. */
+.hk[data-style="deck"] { overflow-x:clip; }   /* a tile flying off must not widen the page */
+.hk[data-style="deck"] .hk-row { display:grid; gap:0; overflow:visible; scroll-snap-type:none;
+  padding:calc(var(--edges, 1) * 12px) var(--side) 0; margin:0; touch-action:pan-y; }
+.hk[data-style="deck"] .hk-tile { grid-area:1 / 1; transform-origin:50% 0;
+  transition:transform .32s cubic-bezier(.2,.8,.2,1), opacity .2s, box-shadow .2s; }
+.hk[data-style="deck"] .hk-tile[data-pos="0"] { z-index:4; box-shadow:0 6px 28px rgba(0,0,0,.07), inset 0 0 0 .5px var(--line); }
+.hk[data-style="deck"] .hk-tile[data-pos="1"] { z-index:3; transform:translateY(-12px) scale(.93); }
+.hk[data-style="deck"] .hk-tile[data-pos="2"] { z-index:2; transform:translateY(-24px) scale(.86); }
+.hk[data-style="deck"] .hk-tile[data-pos="3"] { z-index:1; transform:translateY(-24px) scale(.86); opacity:0; }
+.hk[data-style="deck"] .hk-tile:not([data-pos="0"]) { pointer-events:none; box-shadow:0 2px 10px rgba(0,0,0,.05), inset 0 0 0 .5px #cfcfd6; }
+.hk[data-style="deck"] .hk-row.drag .hk-tile[data-pos="0"] { transition:none; }
+
 /* on a real phone the page IS the app: no rail, no frame */
 @media (max-width:520px) {
   body { background:#f7f7f8; }
@@ -214,9 +235,15 @@ button { font:inherit; color:inherit; }
     <span class="tag">PROPOSED</span>
     <p>The brief is the current creator mobile flow from Figma. <b>One card is new</b>: it sits between Campaign Brief and Brand Guidelines.</p>
     <button class="jump" id="jump" type="button">Jump to the new card</button>
+    <p class="lead">Swipe style</p>
+    <div class="seg" role="group" aria-label="Swipe style">
+      <button type="button" data-swipe="row" class="on" aria-pressed="true">Side by side</button>
+      <button type="button" data-swipe="deck" aria-pressed="false">Stacked deck</button>
+    </div>
     <ul>
       <li><b>One product per tile, and the whole tile swipes.</b> No card inside a card. Swipe or drag it sideways.</li>
-      <li>The next product's tile peeks in at the edge of the screen.</li>
+      <li><b>Side by side:</b> the next product's tile peeks in at the edge of the screen.</li>
+      <li><b>Stacked deck:</b> the other products sit behind the tile with their top edges showing. Pull left for the next product, right for the one before.</li>
       <li><b>Dots</b> under the tile show where you are and jump when tapped. Arrow keys work too.</li>
       <li>Creators see every product's hooks and instructions, not only their own.</li>
     </ul>
@@ -374,93 +401,245 @@ button { font:inherit; color:inherit; }
 
 <script>
 (() => {
-  const track = document.getElementById('hk-track');
+  const wrap = document.getElementById('hooks');
+  const row = document.getElementById('hk-track');
   const dotsEl = document.getElementById('hk-dots');
-  const pages = [...track.querySelectorAll('.hk-tile')];
-  const n = pages.length;
+  const tiles = [...row.querySelectorAll('.hk-tile')];
+  const n = tiles.length;
+  const clamp = (i) => Math.min(n - 1, Math.max(0, i));
+  const cyc = (i) => ((i % n) + n) % n;
 
-  // where a page rests: first hugs the left, last hugs the right, the rest sit centred
-  const restOf = (i) => {
-    const max = track.scrollWidth - track.clientWidth;
-    if (i <= 0) return 0;
-    if (i >= n - 1) return max;
-    return Math.min(max, Math.max(0, pages[i].offsetLeft - (track.clientWidth - pages[i].offsetWidth) / 2));
-  };
-  const current = () => {
-    let best = 0;
-    let gap = Infinity;
-    pages.forEach((_, i) => { const d = Math.abs(restOf(i) - track.scrollLeft); if (d < gap) { gap = d; best = i; } });
-    return best;
-  };
-  // glide to a resting place, and make sure we actually arrive: a tab in the
-  // background (or reduced motion) may never run the smooth scroll
-  let landing = 0;
-  const glide = (left, done) => {
-    clearTimeout(landing);
-    const finish = () => {
-      clearTimeout(landing);
-      track.removeEventListener('scrollend', finish);
-      if (Math.abs(track.scrollLeft - left) > 1) track.scrollLeft = left;
-      if (done) done();
-    };
-    track.addEventListener('scrollend', finish, { once: true });
-    landing = setTimeout(finish, 700);
-    track.scrollTo({ left, behavior: 'smooth' });
-  };
-  const go = (i) => glide(restOf(Math.min(n - 1, Math.max(0, i))));
+  let style = 'row';                       // 'row' = side by side | 'deck' = stacked deck
+  const api = () => (style === 'deck' ? deck : side);
 
-  pages.forEach((_, i) => {
+  /* ---------- dots (shared) ---------- */
+  const dots = tiles.map((_, i) => {
     const b = document.createElement('button');
     b.type = 'button';
     b.setAttribute('aria-label', `Product ${i + 1} of ${n}`);
-    b.addEventListener('click', () => go(i));
+    b.addEventListener('click', () => api().go(i));
     dotsEl.appendChild(b);
+    return b;
   });
   if (n < 2) dotsEl.hidden = true;
-  const dots = [...dotsEl.children];
-  const paint = () => { const c = current(); dots.forEach((d, i) => { d.classList.toggle('on', i === c); d.setAttribute('aria-current', i === c ? 'true' : 'false'); }); };
-  let raf = 0;
-  track.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(paint); }, { passive: true });
-  paint();
+  const paint = (c) => dots.forEach((d, i) => { d.classList.toggle('on', i === c); d.setAttribute('aria-current', i === c ? 'true' : 'false'); });
 
-  track.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); go(current() + 1); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); go(current() - 1); }
+  /* ---------- style A: side by side. Native scrolling + scroll snap do the work. ---------- */
+  const side = (() => {
+    // where a tile rests: first hugs the left, last hugs the right, the rest sit centred
+    const restOf = (i) => {
+      const max = row.scrollWidth - row.clientWidth;
+      if (i <= 0) return 0;
+      if (i >= n - 1) return max;
+      return Math.min(max, Math.max(0, tiles[i].offsetLeft - (row.clientWidth - tiles[i].offsetWidth) / 2));
+    };
+    const current = () => {
+      let best = 0;
+      let gap = Infinity;
+      tiles.forEach((_, i) => { const d = Math.abs(restOf(i) - row.scrollLeft); if (d < gap) { gap = d; best = i; } });
+      return best;
+    };
+    // glide to a resting place, and make sure we actually arrive: a tab in the
+    // background (or reduced motion) may never run the smooth scroll
+    let landing = 0;
+    const glide = (left, done) => {
+      clearTimeout(landing);
+      const finish = () => {
+        clearTimeout(landing);
+        row.removeEventListener('scrollend', finish);
+        if (style === 'row' && Math.abs(row.scrollLeft - left) > 1) row.scrollLeft = left;
+        if (done) done();
+      };
+      row.addEventListener('scrollend', finish, { once: true });
+      landing = setTimeout(finish, 700);
+      row.scrollTo({ left, behavior: 'smooth' });
+    };
+    const go = (i) => glide(restOf(clamp(i)));
+
+    let raf = 0;
+    row.addEventListener('scroll', () => {
+      if (style !== 'row') return;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => paint(current()));
+    }, { passive: true });
+
+    // a mouse has no swipe: let it drag the row (touch and trackpads scroll natively)
+    let drag = null;
+    row.addEventListener('pointerdown', (e) => {
+      if (style !== 'row' || e.pointerType !== 'mouse' || e.button !== 0) return;
+      drag = { x: e.clientX, left: row.scrollLeft, from: current(), moved: 0 };
+      row.setPointerCapture(e.pointerId);
+    });
+    row.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x;
+      drag.moved = dx;
+      if (Math.abs(dx) > 3) row.classList.add('drag');
+      row.scrollLeft = drag.left - dx;
+    });
+    const drop = () => {
+      if (!drag) return;
+      const { moved, from } = drag;
+      drag = null;
+      // snapping is off while dragging: settle by hand, a 40px pull is a page turn
+      const to = Math.abs(moved) > 40 ? from + (moved < 0 ? 1 : -1) : from;
+      glide(restOf(clamp(to)), () => row.classList.remove('drag'));
+    };
+    row.addEventListener('pointerup', drop);
+    row.addEventListener('pointercancel', drop);
+
+    return {
+      on() { row.scrollLeft = 0; paint(0); },
+      off() { clearTimeout(landing); drag = null; row.classList.remove('drag'); row.scrollLeft = 0; },
+      go,
+      step: (d) => go(current() + d),
+    };
+  })();
+
+  /* ---------- style B: a stacked deck. The open tile is on top, the others sit
+     behind it with their top edges showing. Pull the top tile left for the next
+     product, right for the one before; it flies off and joins the back. ---------- */
+  const deck = (() => {
+    let cur = 0;
+    let busy = false;
+    // canonical layout (next product right behind the top one), or with `under`
+    // forced right beneath the top tile while a pull is deciding its direction
+    const lay = (under) => {
+      let slot = 2;
+      tiles.forEach((t, i) => {
+        let pos;
+        if (i === cur) pos = 0;
+        else if (under == null) pos = Math.min(3, cyc(i - cur));
+        else if (i === under) pos = 1;
+        else pos = Math.min(3, slot++);
+        t.dataset.pos = String(pos);
+        t.setAttribute('aria-hidden', pos === 0 ? 'false' : 'true');
+      });
+    };
+    // dir +1 = next (the top tile leaves to the left), -1 = the one before (leaves to the right)
+    const turn = (target, dir) => {
+      if (busy || n < 2 || target === cur) return;
+      busy = true;
+      const top = tiles[cur];
+      lay(target);
+      top.style.transition = 'transform .24s ease-in, opacity .24s ease-in';
+      top.style.transform = `translateX(${-dir * (row.clientWidth + 60)}px) rotate(${-dir * 12}deg)`;
+      top.style.opacity = '0';
+      setTimeout(() => {
+        cur = target;
+        top.style.transition = 'none';     // it joins the back of the deck in place, then fades in there
+        top.style.transform = '';
+        lay();
+        void top.offsetWidth;
+        top.style.transition = '';
+        top.style.opacity = '';
+        paint(cur);
+        busy = false;
+      }, 250);
+    };
+
+    let drag = null;
+    row.addEventListener('pointerdown', (e) => {
+      if (style !== 'deck' || busy || n < 2) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      const top = tiles[cur];
+      if (!top.contains(e.target)) return;
+      drag = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, axis: null, t: performance.now(), top, under: null };
+    });
+    row.addEventListener('pointermove', (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x;
+      const dy = e.clientY - drag.y;
+      if (!drag.axis) {
+        if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+        drag.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';   // up / down belongs to the page
+        if (drag.axis === 'x') {
+          try { row.setPointerCapture(drag.id); } catch (err) { /* already released */ }
+          row.classList.add('drag');
+        }
+      }
+      if (drag.axis !== 'x') return;
+      drag.dx = dx;
+      const under = cyc(cur + (dx < 0 ? 1 : -1));
+      if (under !== drag.under) { drag.under = under; lay(under); }
+      drag.top.style.transform = `translateX(${dx}px) rotate(${dx * 0.03}deg)`;
+    });
+    const release = (e) => {
+      if (!drag || (e && e.pointerId !== drag.id)) return;
+      const d = drag;
+      drag = null;
+      row.classList.remove('drag');
+      if (d.axis !== 'x') return;
+      const speed = Math.abs(d.dx) / Math.max(1, performance.now() - d.t);
+      if (Math.abs(d.dx) > 80 || (speed > 0.5 && Math.abs(d.dx) > 24)) {
+        const dir = d.dx < 0 ? 1 : -1;
+        turn(cyc(cur + dir), dir);
+      } else {
+        d.top.style.transform = '';   // not far enough: back on top of the deck
+        lay();
+      }
+    };
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
+
+    return {
+      on() {
+        cur = 0;
+        busy = false;
+        row.scrollLeft = 0;
+        row.style.setProperty('--edges', String(Math.min(n - 1, 2)));
+        tiles.forEach((t) => { t.style.transform = ''; t.style.opacity = ''; t.style.transition = ''; });
+        lay();
+        paint(0);
+      },
+      off() {
+        drag = null;
+        busy = false;
+        row.classList.remove('drag');
+        row.style.removeProperty('--edges');
+        tiles.forEach((t) => {
+          t.removeAttribute('data-pos');
+          t.removeAttribute('aria-hidden');
+          t.style.transform = '';
+          t.style.opacity = '';
+          t.style.transition = '';
+        });
+      },
+      // a dot jumps straight there; it leaves on the side that is the shorter way round
+      go: (i) => turn(i, cyc(i - cur) <= n / 2 ? 1 : -1),
+      step: (d) => turn(cyc(cur + d), d),
+    };
+  })();
+
+  row.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); api().step(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); api().step(-1); }
   });
 
-  // a mouse has no swipe: let it drag the row (touch and trackpads scroll natively)
-  let drag = null;
-  track.addEventListener('pointerdown', (e) => {
-    if (e.pointerType !== 'mouse' || e.button !== 0) return;
-    drag = { x: e.clientX, left: track.scrollLeft, from: current(), moved: 0 };
-    track.setPointerCapture(e.pointerId);
-  });
-  track.addEventListener('pointermove', (e) => {
-    if (!drag) return;
-    const dx = e.clientX - drag.x;
-    drag.moved = dx;
-    if (Math.abs(dx) > 3) track.classList.add('drag');
-    track.scrollLeft = drag.left - dx;
-  });
-  const drop = () => {
-    if (!drag) return;
-    const { moved, from } = drag;
-    drag = null;
-    // snapping is off while dragging: settle by hand, a 40px pull is a page turn
-    const to = Math.abs(moved) > 40 ? from + (moved < 0 ? 1 : -1) : from;
-    glide(restOf(Math.min(n - 1, Math.max(0, to))), () => track.classList.remove('drag'));
+  /* ---------- which style: ?swipe=deck, or the switch in the rail ---------- */
+  const switches = [...document.querySelectorAll('[data-swipe]')];
+  const setStyle = (next) => {
+    api().off();
+    style = next === 'deck' ? 'deck' : 'row';
+    wrap.dataset.style = style;
+    api().on();
+    switches.forEach((b) => { const on = b.dataset.swipe === style; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
   };
-  track.addEventListener('pointerup', drop);
-  track.addEventListener('pointercancel', drop);
+  switches.forEach((b) => b.addEventListener('click', () => {
+    setStyle(b.dataset.swipe);
+    const url = new URL(window.location.href);
+    if (style === 'deck') url.searchParams.set('swipe', 'deck'); else url.searchParams.delete('swipe');
+    window.history.replaceState(null, '', url);
+  }));
+  setStyle(new URLSearchParams(window.location.search).get('swipe'));
 
   const scroller = document.getElementById('scroll');
   const toCard = (smooth) => {
-    const card = document.getElementById('hooks');
-    scroller.scrollTo({ top: card.offsetTop - (scroller.clientHeight - card.offsetHeight) / 2, behavior: smooth ? 'smooth' : 'auto' });
+    scroller.scrollTo({ top: wrap.offsetTop - (scroller.clientHeight - wrap.offsetHeight) / 2, behavior: smooth ? 'smooth' : 'auto' });
   };
   document.getElementById('jump').addEventListener('click', () => toCard(true));
-  // #hooks opens on the new card, centred (after the browser's own anchor jump, which pins it to the top)
-  if (location.hash === '#hooks') window.addEventListener('load', () => setTimeout(() => toCard(false), 80));
+  // #hooks opens on the new tile, centred (after the browser's own anchor jump, which pins it to the top)
+  if (window.location.hash === '#hooks') window.addEventListener('load', () => setTimeout(() => toCard(false), 80));
 })();
 </script>
 </body>

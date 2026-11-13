@@ -75,6 +75,18 @@ ideal is that they would be able to swipe right/left for each varient" + Figma D
   the brief's cards), last rests right, middle ones centred. Dots sit on the page under the tile and jump on tap;
   arrow keys and mouse drag work on desktop; touch uses native scrolling. One product = one plain full-width tile.
   Round 1 (small cards inside one card) is in git history, commit b9247ca.
+- TWO SWIPE STYLES, same tiles (round 3, Julia Nov 13 picked "Show the deck" when offered):
+  `?swipe=deck` or the "Swipe style" switch in the desktop rail. DEFAULT is still side by side; which one wins is
+  OPEN, hers to call.
+  - Side by side (default): the row above, native scroll + snap.
+  - Stacked deck: the pattern from the favorite-things deck she liked (`../favorite-things-asks-study`, `.stack`
+    + `.edge`). The open tile is on top at FULL width (it lines up with its neighbours on both sides); the other
+    products sit behind it, each 7% narrower and 12px higher, only their top edges showing (two edges at most).
+    Pull the top tile left for the next product, right for the one before (the right tile is slipped underneath
+    as soon as the pull has a direction), 80px or a quick flick commits, it tilts, flies off and joins the back.
+    Up / down still scrolls the page (`touch-action: pan-y`). Dots and arrow keys work the same.
+  - One script, two small controllers (`side`, `deck`) that share the dots; `setStyle()` cleans up after the
+    other one. The script lives in the src html; edit it there.
 - Deviations from the Figma frame, on purpose: both products are named "Big Dulce" there (placeholder), here they
   carry the pack names so the pages can be told apart; the affiliate confetti banner is a 1x render, not a rebuild.
 - Copy (copywriter, creator lane, queued q-20261113-204313-01 to -04, all PROPOSED): the card title is "Hooks and
