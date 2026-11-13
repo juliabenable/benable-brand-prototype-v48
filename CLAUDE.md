@@ -91,11 +91,20 @@ ideal is that they would be able to swipe right/left for each varient" + Figma D
   - One script, two small controllers (`side`, `deck`) that share the dots; `setStyle()` cleans up after the
     other one. The script lives in the src html; edit it there.
 - LINE CAP (Julia, Nov 13: "make sure you only show x lines, and after it shows a "show more""): each list on a
-  tile shows `LINES` bullets (3; she left the number open, `?lines=N` tries another), the rest carry `li.extra`
+  tile shows `LINES` bullets (3, AGREED: she wrote "x", then answered "Keep 3" once it was built; `?lines=N` still
+  tries another for demos), the rest carry `li.extra`
   and hide until the tile is `.open`. ONE "Show more" link per tile opens both of its lists ("Show less" closes;
   that wording is mine, PROPOSED); a tile with nothing cut has no link. A tile closes again 220ms after you leave
-  it (closing mid-swipe made the page jump). A line = one bullet, not a line of wrapped text: OPEN if she meant
-  text lines. The mouse drag only captures the pointer after 4px, so a click on the link stays a click.
+  it (closing mid-swipe made the page jump). A line = one bullet, not a line of wrapped text; she kept 3 after
+  seeing it built that way, which is not the same as her saying so. The mouse drag only captures the pointer after 4px, so a click on the link stays a click.
+- MOBILE HANDOFF (Nov 13, Julia: "build the minimal doc I should send to Nathan to answer all his questions",
+  "for mobile"; Nathan = mobile engineer). The doc is a Claude Doc, PRIVATE until Julia shares it:
+  https://claude.ai/artifact/SK3TNmp6nQYiFUZDoGGpxQ ("Hook ideas by product: mobile handoff for Nathan"). It links
+  to `creator-brief.html?handoff=1#hooks`: the handoff view of this page, decided things only (no PROPOSED tag, no
+  swipe-style switch, always side by side; `.study-only` / `.handoff-only` in the rail). Her rule for engineers:
+  nothing tagged Proposed reaches them, undecided things go under "Not in this build". No question from Nathan
+  about this was found in Slack or the Nov 11 to 13 meetings, so the doc answers the questions a mobile build
+  raises. The doc image is `creator-brief/shots/handoff-tile-states.png`.
 - Deviations from the Figma frame, on purpose: both products are named "Big Dulce" there (placeholder), here they
   carry the pack names so the pages can be told apart; the affiliate confetti banner is a 1x render, not a rebuild.
 - Copy, JULIA'S RULING (Nov 13, after seeing the tiles): "remove the title "Hooks"" and "rename the "Hook"

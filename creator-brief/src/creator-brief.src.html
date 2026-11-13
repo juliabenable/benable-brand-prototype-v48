@@ -6,6 +6,7 @@
 <title>Creator brief: hooks by product (v48)</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:,">
+<script>if (new URLSearchParams(location.search).has('handoff')) document.documentElement.classList.add('handoff');</script>
 <!--
   Creator side of "Hooks & Instructions by Product" (Nov 13 2026, PROPOSED).
 
@@ -63,6 +64,11 @@ button { font:inherit; color:inherit; }
 .rail .seg button.on { background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.12); }
 .rail .lead { font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:#9a9aa3; margin:0 0 6px; }
 .rail ul { margin:0 0 14px 18px; font-size:13px; line-height:20px; color:var(--med); }
+/* ?handoff=1: the link that goes to engineering shows decided things only (Julia's rule: nothing tagged
+   Proposed reaches an engineer). It hides the PROPOSED tag and the swipe-style switch, and plays side by side. */
+.handoff .study-only { display:none !important; }
+.handoff-only { display:none; }
+.handoff .handoff-only { display:revert; }
 .rail li { margin-bottom:6px; }
 
 /* ---------- phone chrome (375 x 812, the approved creator prototype frame) ---------- */
@@ -235,25 +241,27 @@ button { font:inherit; color:inherit; }
 <div class="wrap">
 
   <aside class="rail">
-    <div class="crumb">v48 · creator side</div>
-    <h1>Hooks by product, in the creator's brief</h1>
-    <span class="tag">PROPOSED</span>
-    <p>The brief is the current creator mobile flow from Figma. <b>One card is new</b>: it sits between Campaign Brief and Brand Guidelines.</p>
-    <button class="jump" id="jump" type="button">Jump to the new card</button>
-    <p class="lead">Swipe style</p>
-    <div class="seg" role="group" aria-label="Swipe style">
+    <div class="crumb"><span class="study-only">v48 · creator side</span><span class="handoff-only">Mobile handoff</span></div>
+    <h1>Hook ideas by product, in the creator's brief</h1>
+    <span class="tag study-only">PROPOSED</span>
+    <p>The brief is the current creator mobile flow from Figma. <b>One section is new</b>: it sits between Campaign Brief and Brand Guidelines.</p>
+    <button class="jump" id="jump" type="button">Jump to the new tile</button>
+    <p class="lead study-only">Swipe style</p>
+    <div class="seg study-only" role="group" aria-label="Swipe style">
       <button type="button" data-swipe="row" class="on" aria-pressed="true">Side by side</button>
       <button type="button" data-swipe="deck" aria-pressed="false">Stacked deck</button>
     </div>
     <ul>
       <li><b>One product per tile, and the whole tile swipes.</b> No card inside a card. Swipe or drag it sideways.</li>
-      <li><b>Side by side:</b> the next product's tile peeks in at the edge of the screen.</li>
-      <li><b>Stacked deck:</b> the other products sit behind the tile with their top edges showing. Pull left for the next product, right for the one before.</li>
-      <li><b>Three lines per list,</b> then Show more. The link opens both lists on that tile, and the tile closes again when you leave it. Add <b>?lines=2</b> to the link to try another number.</li>
+      <li class="study-only"><b>Side by side:</b> the next product's tile peeks in at the edge of the screen.</li>
+      <li class="study-only"><b>Stacked deck:</b> the other products sit behind the tile with their top edges showing. Pull left for the next product, right for the one before.</li>
+      <li class="handoff-only">The next product's tile shows at the edge of the screen.</li>
+      <li><b>Three lines per list,</b> then Show more. The link opens both lists on that tile, and the tile closes again when you leave it.<span class="study-only"> Add <b>?lines=2</b> to the link to try another number.</span></li>
       <li><b>Dots</b> under the tile show where you are and jump when tapped. Arrow keys work too.</li>
-      <li>Creators see every product's hooks and instructions, not only their own.</li>
+      <li>Creators see every product's hook ideas and instructions, not only their own.</li>
     </ul>
-    <p>Changed from Figma: its two products are both named Big Dulce. Here they carry the names on the packs, so the pages can be told apart.</p>
+    <p class="study-only">Changed from Figma: its two products are both named Big Dulce. Here they carry the names on the packs, so the pages can be told apart.</p>
+    <p class="handoff-only">Product names and the lines on the tiles are sample content.</p>
   </aside>
 
   <div class="phone">
@@ -429,7 +437,7 @@ button { font:inherit; color:inherit; }
 
   /* ---------- only N lines per list, then "Show more" (shared) ----------
      Julia, Nov 13: "make sure you only show x lines, and after it shows a "show more"".
-     She left the number open: 3 here, ?lines=N tries another. A line = one bullet.
+     She left the number open, then kept 3 once it was built (AGREED). ?lines=N still tries another. A line = one bullet.
      One link per tile opens both of its lists; a tile closes again once you leave it. */
   const LINES = (() => {
     const v = parseInt(new URLSearchParams(window.location.search).get('lines'), 10);
@@ -682,7 +690,8 @@ button { font:inherit; color:inherit; }
     if (style === 'deck') url.searchParams.set('swipe', 'deck'); else url.searchParams.delete('swipe');
     window.history.replaceState(null, '', url);
   }));
-  setStyle(new URLSearchParams(window.location.search).get('swipe'));
+  const HANDOFF = document.documentElement.classList.contains('handoff');
+  setStyle(HANDOFF ? 'row' : new URLSearchParams(window.location.search).get('swipe'));
 
   const scroller = document.getElementById('scroll');
   const toCard = (smooth) => {
